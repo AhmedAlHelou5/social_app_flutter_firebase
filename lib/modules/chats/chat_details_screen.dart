@@ -57,63 +57,7 @@ class ChatDetailsScreen extends StatelessWidget {
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                // Align(
-                                //   alignment: AlignmentDirectional.centerStart,
-                                //
-                                //   child: Container(
-                                //     decoration: BoxDecoration(
-                                //         color: Colors.grey[300],
-                                //         // color: defaultColor.withOpacity(.2),
-                                //         borderRadius: const BorderRadiusDirectional.only(
-                                //           topEnd: Radius.circular(10),
-                                //           topStart: Radius.circular(10),
-                                //           bottomEnd: Radius.circular(10),
-                                //         )
-                                //
-                                //     ),
-                                //     padding: EdgeInsets.symmetric(
-                                //         horizontal: 10,
-                                //         vertical: 10
-                                //     ),
-                                //     child: Text('Messages', style: Theme
-                                //         .of(context)
-                                //         .textTheme
-                                //         .caption!
-                                //         .copyWith(height: 1.4,
-                                //         fontSize: 14,
-                                //         color: Colors.black.withOpacity(0.8))),
-                                //
-                                //   ),
-                                // ),
-                                // Align(
-                                //   alignment: AlignmentDirectional.centerEnd,
-                                //
-                                //   child: Container(
-                                //     decoration: BoxDecoration(
-                                //       // color: Colors.grey[300],
-                                //         color: defaultColor.withOpacity(.2),
-                                //         borderRadius: const BorderRadiusDirectional.only(
-                                //           topEnd: Radius.circular(10),
-                                //           topStart: Radius.circular(10),
-                                //           bottomStart: Radius.circular(10),
-                                //         )
-                                //
-                                //     ),
-                                //     padding: EdgeInsets.symmetric(
-                                //         horizontal: 10,
-                                //         vertical: 10
-                                //     ),
-                                //     child: Text('Messages', style: Theme
-                                //         .of(context)
-                                //         .textTheme
-                                //         .caption!
-                                //         .copyWith(height: 1.4,
-                                //         fontSize: 14,
-                                //         color: Colors.black.withOpacity(0.8))),
-                                //
-                                //   ),
-                                // ),
-                                // Spacer(),
+
                                 Expanded(
                                   child: ConditionalBuilder(
                                     condition: cubit.messages.length > 0,
@@ -137,8 +81,11 @@ class ChatDetailsScreen extends StatelessWidget {
 
                                   ),
                                 ),
+
                                 if(cubit.messages.length == 0)
                                   Spacer(),
+                                SizedBox(height: 20),
+
                                 Container(
                                   // padding: EdgeInsets.all(5),
                                   clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -171,6 +118,7 @@ class ChatDetailsScreen extends StatelessWidget {
                                                 // },
                                               ),
                                             )),
+
                                         Container(
                                           height: 50,
                                           decoration: BoxDecoration(
@@ -210,7 +158,7 @@ class ChatDetailsScreen extends StatelessWidget {
 
                                       ]
                                   ),
-                                )
+                                ),
 
                               ]
                           ),

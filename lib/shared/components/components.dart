@@ -3,110 +3,22 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
 import 'package:social_app_flutter_firebase/models/message/message_model.dart';
+import 'package:social_app_flutter_firebase/models/post/comment_model.dart';
+import 'package:social_app_flutter_firebase/models/user/user_model.dart';
+import 'package:social_app_flutter_firebase/modules/feeds/comment_screen.dart';
 
 import '../../layout/home/cubit/cubit.dart';
 import '../../models/post/post_model.dart';
 import '../styles/colors/colors.dart';
 
+Widget buildDivider() => Container(
+      height: 24,
+      child: VerticalDivider(
+        color: Colors.grey,
+      ),
+    );
 
-// Widget buildArticleItem(article,context) => InkWell(
-//   onTap: () {
-//     navigateTo(context, WebViewScreen(url: '${article['url']}'));
-//   },
-//   child:   Padding(
-//
-//     padding: const EdgeInsets.all(15.0),
-//
-//     child: Row(
-//
-//         children: [
-//
-//           Expanded(
-//
-//             child: Container(
-//
-//               width: 120,
-//
-//               height: 120,
-//
-//               decoration: BoxDecoration(
-//
-//                   borderRadius: BorderRadius.circular(10),
-//
-//                   image: DecorationImage(
-//
-//                     image: NetworkImage(
-//
-//                       '${article['urlToImage']}',
-//
-//                     ),
-//
-//                     fit: BoxFit.cover,
-//
-//
-//
-//                   )
-//
-//               ),
-//
-//             ),
-//
-//           ),
-//
-//           SizedBox(width: 20,),
-//
-//           Expanded(
-//
-//               child: Container(
-//
-//                 height: 130,
-//
-//                 child: Column(
-//
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//
-//                     mainAxisSize: MainAxisSize.min,
-//
-//                     mainAxisAlignment: MainAxisAlignment.start,
-//
-//                     children: [
-//
-//                       Text('${article['title']}',maxLines: 3,overflow: TextOverflow.ellipsis,style:Theme.of(context).textTheme.bodyText1,),
-//
-//                       SizedBox(height: 10,),
-//
-//                       Text('${article['publishedAt']}',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.grey),),
-//
-//                     ]
-//
-//                 ),
-//
-//               )
-//
-//           )
-//
-//         ]
-//
-//     ),
-//
-//   ),
-// );
-//
-// Widget articleBuilder(list,context,{isSearch=false}) => ConditionalBuilder(
-//   condition: list.length > 0,
-//   builder: (context) => ListView.separated(
-//     physics: BouncingScrollPhysics(),
-//     itemBuilder: (context,index) => buildArticleItem(list[index],context),
-//     separatorBuilder: ( context,index) =>myDivider(),
-//     itemCount: list.length,
-//   ),
-//   fallback: (context) =>isSearch ? Container(): Center(child: CircularProgressIndicator()),
-// );
-//
-//
-//
-Widget myDivider() =>
-    Padding(
+Widget myDivider() => Padding(
       padding: const EdgeInsetsDirectional.only(
         start: 20.0,
       ),
@@ -117,26 +29,21 @@ Widget myDivider() =>
       ),
     );
 
-void navigateTo(context, widget) =>
-    Navigator.push(
+void navigateTo(context, widget) => Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => widget,
       ),
     );
 
-void navigateAndFinish(context, Widget widget) =>
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (context) => widget,
-        ),
-            (route) => false
-    );
-
+void navigateAndFinish(context, Widget widget) => Navigator.pushAndRemoveUntil(
+    context,
+    MaterialPageRoute(
+      builder: (context) => widget,
+    ),
+    (route) => false);
 
 Widget defaultFormField({
-
   required TextEditingController? controller,
   required TextInputType? type,
   required validate,
@@ -172,507 +79,495 @@ Widget defaultFormField({
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
-        suffixIcon: suffix != null ? IconButton(
-          icon: Icon(suffix), onPressed: suffixPresed,) : null,
-
+        suffixIcon: suffix != null
+            ? IconButton(
+                icon: Icon(suffix),
+                onPressed: suffixPresed,
+              )
+            : null,
         prefixIcon: Icon(
           prefix,
         ),
         focusColor: Colors.blue,
-
         border: OutlineInputBorder(),
       ),
     );
 
-
-
-
-Widget buildMessage(MessageModel message,context, {Key? key}) =>
-    Align(
-  alignment: AlignmentDirectional.centerStart,
-
-  child: Container(
-    decoration: BoxDecoration(
-        color: Colors.grey[300],
-        // color: defaultColor.withOpacity(.2),
-        borderRadius: const BorderRadiusDirectional.only(
-          topEnd: Radius.circular(10),
-          topStart: Radius.circular(10),
-          bottomEnd: Radius.circular(10),
-        )
-
-    ),
-    padding: EdgeInsets.symmetric(
-        horizontal: 10,
-        vertical: 10
-    ),
-    child: Text('${message.text}', style: Theme
-        .of(context)
-        .textTheme
-        .caption!
-        .copyWith(height: 1.4,
-        fontSize: 14,
-        color: Colors.black.withOpacity(0.8))),
-
-  ),
-);
-
-Widget buildMyMessage(MessageModel message,context, {Key? key}) =>
-    Align(
-        alignment: AlignmentDirectional.centerEnd,
-
-        child: Container(
-
-          decoration: BoxDecoration(
-            // color: Colors.grey[300],
-              color: defaultColor.withOpacity(.2),
-              borderRadius: const BorderRadiusDirectional.only(
-                topEnd: Radius.circular(10),
-                topStart: Radius.circular(10),
-                bottomStart: Radius.circular(10),
-              )
-
-          ),
-          padding: EdgeInsets.symmetric(
-              horizontal: 10,
-              vertical: 10
-          ),
-          child: Text('${message.text}', style: Theme
-              .of(context)
-              .textTheme
-              .caption!
-              .copyWith(height: 1.4,
-              fontSize: 14,
-              color: Colors.black.withOpacity(0.8))),
-
-        ),
-      );
-
-
-
-
-
-
-
-
-
-
-Widget buildPostItem(PostModel? model, context, int? index, commentController,
-   int? likes,int? comments) =>
-    Card(
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      elevation: 5,
-      margin: EdgeInsets.symmetric(
-        horizontal: 8,
+Widget buildMessage(MessageModel message, context, {Key? key}) => Align(
+      alignment: AlignmentDirectional.centerStart,
+      child: Container(
+        decoration: BoxDecoration(
+            color: Colors.grey[300],
+            // color: defaultColor.withOpacity(.2),
+            borderRadius: const BorderRadiusDirectional.only(
+              topEnd: Radius.circular(10),
+              topStart: Radius.circular(10),
+              bottomEnd: Radius.circular(10),
+            )),
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        child: Text('${message.text}',
+            style: Theme.of(context).textTheme.caption!.copyWith(
+                height: 1.4,
+                fontSize: 14,
+                color: Colors.black.withOpacity(0.8))),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+    );
+
+Widget buildMyMessage(MessageModel message, context, {Key? key}) => Align(
+      alignment: AlignmentDirectional.centerEnd,
+      child: Container(
+        decoration: BoxDecoration(
+            // color: Colors.grey[300],
+            color: defaultColor.withOpacity(.2),
+            borderRadius: const BorderRadiusDirectional.only(
+              topEnd: Radius.circular(10),
+              topStart: Radius.circular(10),
+              bottomStart: Radius.circular(10),
+            )),
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        child: Text('${message.text}',
+            style: Theme.of(context).textTheme.caption!.copyWith(
+                height: 1.4,
+                fontSize: 14,
+                color: Colors.black.withOpacity(0.8))),
+      ),
+    );
+
+Widget buildPostItem(
+  PostModel? model,
+  context,
+  int? index,
+  commentController,
+) {
+  // bool buttonClicked = false;
+
+  return Card(
+    clipBehavior: Clip.antiAliasWithSaveLayer,
+    elevation: 5,
+    margin: EdgeInsets.symmetric(
+      horizontal: 8,
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(children: [
+            CircleAvatar(
+              radius: 25,
+              backgroundImage: NetworkImage('${model!.image}'),
+            ),
+            SizedBox(width: 15),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CircleAvatar(
-                    radius: 25,
-                    backgroundImage: NetworkImage(
-                        '${model!.image}'),
-                  ),
-                  SizedBox(width: 15),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              '${model.name}',
-                              style: TextStyle(height: 1.4),
-                            ),
-                            SizedBox(width: 5),
-                            Icon(
-                              Icons.check_circle,
-                              color: defaultColor,
-                              size: 16,
-                            ),
-                          ],
-                        ),
-                        Text(
-                          ' ${DateFormat.jmv().format(DateTime.parse(
-                              model.dateTime!)) as String}  ${DateFormat
-                              .yMMMMd().format(
-                              DateTime.parse(model.dateTime!)) as String}',
-                          style: Theme
-                              .of(context)
-                              .textTheme
-                              .caption!
-                              .copyWith(height: 1.4),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(width: 15),
-                  IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.more_horiz,
+                  Row(
+                    children: [
+                      Text(
+                        '${model.name}',
+                        style: TextStyle(height: 1.4),
+                      ),
+                      SizedBox(width: 5),
+                      Icon(
+                        Icons.check_circle,
+                        color: defaultColor,
                         size: 16,
-                      )),
-                ]),
-            // myDivider(),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              child: Container(
-                height: 1,
-                color: Colors.grey[300],
-                width: double.infinity,
-              ),
-            ),
-            Text(
-              '${model.text}',
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .subtitle1,
-            ),
-            // Padding(
-            //   padding: const EdgeInsets.only(bottom: 10.0, top: 5),
-            //   child: Container(
-            //     width: double.infinity,
-            //     child: Wrap(
-            //         children: [
-            //           Padding(
-            //             padding: EdgeInsetsDirectional.only(end: 6),
-            //             child: Container(
-            //               height: 20,
-            //               child: MaterialButton(
-            //                 onPressed: () {},
-            //                 child: Text(
-            //                   '#Software',
-            //                   style: Theme
-            //                       .of(context)
-            //                       .textTheme
-            //                       .caption!
-            //                       .copyWith(
-            //                     color: defaultColor,
-            //                   ),
-            //                 ),
-            //                 minWidth: 1,
-            //                 padding: EdgeInsets.zero,
-            //               ),
-            //             ),
-            //           ),
-            //           Padding(
-            //             padding: EdgeInsetsDirectional.only(end: 6),
-            //             child: Container(
-            //               height: 20,
-            //               child: MaterialButton(
-            //                 onPressed: () {},
-            //                 child: Text(
-            //                   '#Software',
-            //                   style: Theme
-            //                       .of(context)
-            //                       .textTheme
-            //                       .caption!
-            //                       .copyWith(
-            //                     color: defaultColor,
-            //                   ),
-            //                 ),
-            //                 minWidth: 1,
-            //                 padding: EdgeInsets.zero,
-            //               ),
-            //             ),
-            //           ),
-            //           Padding(
-            //             padding: EdgeInsetsDirectional.only(end: 6),
-            //             child: Container(
-            //               height: 20,
-            //               child: MaterialButton(
-            //                 onPressed: () {},
-            //                 child: Text(
-            //                   '#Software',
-            //                   style: Theme
-            //                       .of(context)
-            //                       .textTheme
-            //                       .caption!
-            //                       .copyWith(
-            //                     color: defaultColor,
-            //                   ),
-            //                 ),
-            //                 minWidth: 1,
-            //                 padding: EdgeInsets.zero,
-            //               ),
-            //             ),
-            //           ),
-            //           Padding(
-            //             padding: EdgeInsetsDirectional.only(end: 6),
-            //             child: Container(
-            //               height: 20,
-            //               child: MaterialButton(
-            //                 onPressed: () {},
-            //                 child: Text(
-            //                   '#Software',
-            //                   style: Theme
-            //                       .of(context)
-            //                       .textTheme
-            //                       .caption!
-            //                       .copyWith(
-            //                     color: defaultColor,
-            //                   ),
-            //                 ),
-            //                 minWidth: 1,
-            //                 padding: EdgeInsets.zero,
-            //               ),
-            //             ),
-            //           ),
-            //           Padding(
-            //             padding: EdgeInsetsDirectional.only(end: 6),
-            //             child: Container(
-            //               height: 20,
-            //               child: MaterialButton(
-            //                 onPressed: () {},
-            //                 child: Text(
-            //                   '#Software',
-            //                   style: Theme
-            //                       .of(context)
-            //                       .textTheme
-            //                       .caption!
-            //                       .copyWith(
-            //                     color: defaultColor,
-            //                   ),
-            //                 ),
-            //                 minWidth: 1,
-            //                 padding: EdgeInsets.zero,
-            //               ),
-            //             ),
-            //           ),
-            //           Padding(
-            //             padding: EdgeInsetsDirectional.only(end: 6),
-            //             child: Container(
-            //               height: 20,
-            //               child: MaterialButton(
-            //                 onPressed: () {},
-            //                 child: Text(
-            //                   '#Software',
-            //                   style: Theme
-            //                       .of(context)
-            //                       .textTheme
-            //                       .caption!
-            //                       .copyWith(
-            //                     color: defaultColor,
-            //                   ),
-            //                 ),
-            //                 minWidth: 1,
-            //                 padding: EdgeInsets.zero,
-            //               ),
-            //             ),
-            //           ),
-            //
-            //
-            //         ]
-            //     ),
-            //   ),
-            // ),
-            if (model.postImage != '')
-              Padding(
-                padding: const EdgeInsetsDirectional.only(top: 15),
-                child: Container(
-                  width: double.infinity,
-                  height: 150,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(4),
-                      image: DecorationImage(
-                        image: NetworkImage(
-                          '${model.postImage}',
-                        ),
-                        fit: BoxFit.cover,
-                      )),
-                ),
-              ),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: InkWell(
-                      onTap: () {},
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 5.0),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.favorite_border,
-                              size: 16,
-                              color: Colors.red,
-                            ),
-                            SizedBox(width: 5),
-                            Text('${likes} ',
-                              style: Theme
-                                  .of(context)
-                                  .textTheme
-                                  .caption,),
-                          ],
-
-                        ),
                       ),
-                    ),
+                    ],
                   ),
-                  Expanded(
-                    child: InkWell(
-                      onTap: () {},
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 5.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Icon(
-                              Icons.chat,
-                              size: 16,
-                              color: Colors.amber,
-                            ),
-                            SizedBox(width: 5),
-                            Text('${comments} comment', style: Theme
-                                .of(context)
-                                .textTheme
-                                .caption,),
-                          ],
-
-                        ),
-                      ),
-                    ),
-                  )
+                  Text(
+                    ' ${DateFormat.jmv().format(DateTime.parse(model.dateTime!)) as String}  ${DateFormat.yMMMMd().format(DateTime.parse(model.dateTime!)) as String}',
+                    style: Theme.of(context)
+                        .textTheme
+                        .caption!
+                        .copyWith(height: 1.4),
+                  ),
                 ],
               ),
             ),
+            SizedBox(width: 15),
+            IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.more_horiz,
+                  size: 16,
+                )),
+          ]),
+          // myDivider(),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 15),
+            child: Container(
+              height: 1,
+              color: Colors.grey[300],
+              width: double.infinity,
+            ),
+          ),
+          Text(
+            '${model.text}',
+            style: Theme.of(context).textTheme.subtitle1,
+          ),
+          // Padding(
+          //   padding: const EdgeInsets.only(bottom: 10.0, top: 5),
+          //   child: Container(
+          //     width: double.infinity,
+          //     child: Wrap(
+          //         children: [
+          //           Padding(
+          //             padding: EdgeInsetsDirectional.only(end: 6),
+          //             child: Container(
+          //               height: 20,
+          //               child: MaterialButton(
+          //                 onPressed: () {},
+          //                 child: Text(
+          //                   '#Software',
+          //                   style: Theme
+          //                       .of(context)
+          //                       .textTheme
+          //                       .caption!
+          //                       .copyWith(
+          //                     color: defaultColor,
+          //                   ),
+          //                 ),
+          //                 minWidth: 1,
+          //                 padding: EdgeInsets.zero,
+          //               ),
+          //             ),
+          //           ),
+          //           Padding(
+          //             padding: EdgeInsetsDirectional.only(end: 6),
+          //             child: Container(
+          //               height: 20,
+          //               child: MaterialButton(
+          //                 onPressed: () {},
+          //                 child: Text(
+          //                   '#Software',
+          //                   style: Theme
+          //                       .of(context)
+          //                       .textTheme
+          //                       .caption!
+          //                       .copyWith(
+          //                     color: defaultColor,
+          //                   ),
+          //                 ),
+          //                 minWidth: 1,
+          //                 padding: EdgeInsets.zero,
+          //               ),
+          //             ),
+          //           ),
+          //           Padding(
+          //             padding: EdgeInsetsDirectional.only(end: 6),
+          //             child: Container(
+          //               height: 20,
+          //               child: MaterialButton(
+          //                 onPressed: () {},
+          //                 child: Text(
+          //                   '#Software',
+          //                   style: Theme
+          //                       .of(context)
+          //                       .textTheme
+          //                       .caption!
+          //                       .copyWith(
+          //                     color: defaultColor,
+          //                   ),
+          //                 ),
+          //                 minWidth: 1,
+          //                 padding: EdgeInsets.zero,
+          //               ),
+          //             ),
+          //           ),
+          //           Padding(
+          //             padding: EdgeInsetsDirectional.only(end: 6),
+          //             child: Container(
+          //               height: 20,
+          //               child: MaterialButton(
+          //                 onPressed: () {},
+          //                 child: Text(
+          //                   '#Software',
+          //                   style: Theme
+          //                       .of(context)
+          //                       .textTheme
+          //                       .caption!
+          //                       .copyWith(
+          //                     color: defaultColor,
+          //                   ),
+          //                 ),
+          //                 minWidth: 1,
+          //                 padding: EdgeInsets.zero,
+          //               ),
+          //             ),
+          //           ),
+          //           Padding(
+          //             padding: EdgeInsetsDirectional.only(end: 6),
+          //             child: Container(
+          //               height: 20,
+          //               child: MaterialButton(
+          //                 onPressed: () {},
+          //                 child: Text(
+          //                   '#Software',
+          //                   style: Theme
+          //                       .of(context)
+          //                       .textTheme
+          //                       .caption!
+          //                       .copyWith(
+          //                     color: defaultColor,
+          //                   ),
+          //                 ),
+          //                 minWidth: 1,
+          //                 padding: EdgeInsets.zero,
+          //               ),
+          //             ),
+          //           ),
+          //           Padding(
+          //             padding: EdgeInsetsDirectional.only(end: 6),
+          //             child: Container(
+          //               height: 20,
+          //               child: MaterialButton(
+          //                 onPressed: () {},
+          //                 child: Text(
+          //                   '#Software',
+          //                   style: Theme
+          //                       .of(context)
+          //                       .textTheme
+          //                       .caption!
+          //                       .copyWith(
+          //                     color: defaultColor,
+          //                   ),
+          //                 ),
+          //                 minWidth: 1,
+          //                 padding: EdgeInsets.zero,
+          //               ),
+          //             ),
+          //           ),
+          //
+          //
+          //         ]
+          //     ),
+          //   ),
+          // ),
+          if (model.postImage != '')
             Padding(
-              padding: const EdgeInsets.only(bottom: 10.0),
+              padding: const EdgeInsetsDirectional.only(top: 15),
               child: Container(
-                height: 1,
-                color: Colors.grey[300],
                 width: double.infinity,
+                height: 150,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4),
+                    image: DecorationImage(
+                      image: NetworkImage(
+                        '${model.postImage}',
+                      ),
+                      fit: BoxFit.cover,
+                    )),
               ),
             ),
 
-            Row(
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5.0),
+            child: Row(
               children: [
-                CircleAvatar(
-                  radius: 18,
-                  backgroundImage: NetworkImage(
-                      '${HomeCubit
-                          .get(context)
-                          .model!
-                          .image}'),
-                ),
-                SizedBox(width: 15),
-
-                          Expanded(
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.6,
-                              child: TextFormField(
-
-                                controller: commentController,
-                                keyboardType: TextInputType.text,
-                                maxLines: 1,
-                                decoration: InputDecoration(
-                                    hintText: 'write a comment ...',
-                                    border: InputBorder.none
-                                ),
-                                validator: (String? value) {
-                                  if (value!.isEmpty) {
-                                    return 'comment must not be empty';
-                                  }
-                                  return null;
-                                },
-                                onChanged: (val) {
-                                  HomeCubit.get(context).changeLength(val.length);
-                                },
-
-
-                              ),
-                            ),
+                Expanded(
+                  child: InkWell(
+                    onTap: () {},
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 5.0),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.favorite_border,
+                            size: 16,
+                            color: Colors.red,
                           ),
-                          // if( commentController.text.length > 0)
-                          //    SizedBox(width: 15),
-                          //
-                          if( commentController.text.length > 0)
-                            sendToComment(
-                                context, index, commentController),
-
-                InkWell(
-                  onTap: () {
-                    HomeCubit.get(context).likeOrDislikePost(HomeCubit
-                        .get(context)
-                        .postsId[index!], );
-                    // HomeCubit.get(context).changeLikeOrDisLikePostColor(HomeCubit.get(context).postsId[index!]);
-                  },
-                  child: Row(
-                    children: [
-                      Icon(
-                       Icons.favorite_border,
-                        size: 16,
-                        color: Colors.red,
+                          SizedBox(width: 5),
+                          Text(
+                            '${model.likes.length} ' ?? '0',
+                            style: Theme.of(context).textTheme.caption,
+                          ),
+                        ],
                       ),
-                      SizedBox(width: 5),
-                      Text('Like', style: Theme
-                          .of(context)
-                          .textTheme
-                          .caption,),
-                    ],
-
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      // dialogBuilder(HomeCubit.get(context).comments, context, index, commentController, likes);
+                      navigateTo(
+                          context,
+                          CommentScreen(
+                            postId: HomeCubit.get(context).postsId[index!],
+                          ));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 5.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Icon(
+                            Icons.chat,
+                            size: 16,
+                            color: Colors.amber,
+                          ),
+                          SizedBox(width: 5),
+                          Text(
+                            '${model.comments.length} comment',
+                            style: Theme.of(context).textTheme.caption,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 )
-
               ],
-            )
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10.0),
+            child: Container(
+              height: 1,
+              color: Colors.grey[300],
+              width: double.infinity,
+            ),
+          ),
+
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 18,
+                backgroundImage: model.image != null || model.image != ''
+                    ? NetworkImage('${HomeCubit.get(context).model!.image}')
+                    : Image.asset('assets/images/person.png').image,
+              ),
+              SizedBox(width: 15),
+
+              Expanded(
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  child: TextFormField(
+                    controller: commentController,
+                    keyboardType: TextInputType.text,
+                    maxLines: 1,
+                    decoration: InputDecoration(
+                        hintText: 'write a comment ...',
+                        border: InputBorder.none),
+                    validator: (String? value) {
+                      if (value!.isEmpty) {
+                        return 'comment must not be empty';
+                      }
+                      return null;
+                    },
+                    onChanged: (val) {
+                      HomeCubit.get(context).changeLength(val.length);
+                    },
+                  ),
+                ),
+              ),
+              // if( commentController.text.length > 0)
+              //    SizedBox(width: 15),
+              //
+              if (commentController.text.length > 0)
+                sendToComment(
+                    context,
+                    index,
+                    commentController,
+                    HomeCubit.get(context).model!.name,
+                    HomeCubit.get(context).model!.image,
+                    HomeCubit.get(context).model!.uId),
+
+              InkWell(
+                onTap: () {
+                  var postId = HomeCubit.get(context).postsId;
+                  var cubit = HomeCubit.get(context);
+                  cubit.buttonClicked =   !cubit.buttonClicked;
+                  print( cubit.buttonClicked);
+
+                  if ( cubit.buttonClicked){
+                    cubit.likePost(
+                      uId: HomeCubit.get(context).model!.uId,
+                      postId: postId[postId.indexOf(postId[index!])],
+                    );
+                    cubit.buttonClicked = !cubit.buttonClicked;
+
+                  }else{
+                    cubit.DislikePost(
+                      uId: HomeCubit.get(context).model!.uId,
+                      postId: postId[postId.indexOf(postId[index!])],
+                    );
+                    cubit.buttonClicked = !cubit.buttonClicked;
+
+                  }
 
 
-          ],
-        ),
+
+
+                },
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.favorite_border,
+                      size: 16,
+                      color: Colors.red,
+                    ),
+                    SizedBox(width: 5),
+                    Text(
+                      'Like',
+                      style: Theme.of(context).textTheme.caption,
+                    ),
+                  ],
+                ),
+              )
+            ],
+          )
+        ],
       ),
-    );
+    ),
+  );
+}
 
-
-Widget sendToComment(context, index, controller) =>
-    Expanded(
-      flex: 1,
-      child: IconButton(
-          color: defaultColor,
-          onPressed: () {
-            print('Send');
-            HomeCubit.get(context).commentPost(HomeCubit
-                .get(context)
-                .postsId[index], controller.text);
-            controller.clear();
-          },
-          icon: Icon(
-            Icons.send,
-          )),
-    );
-
+Widget sendToComment(context, index, controller, name, image, id) {
+  var postId = HomeCubit.get(context).postsId;
+  return Expanded(
+    flex: 1,
+    child: IconButton(
+        color: defaultColor,
+        onPressed: () {
+          print('Send');
+          HomeCubit.get(context).commentPost(
+              postId: HomeCubit.get(context)
+                  .postsId[postId.indexOf(postId[index!])],
+              dateTime: DateTime.now().toString(),
+              text: controller.text,
+              image: image,
+              name: name);
+          controller.clear();
+        },
+        icon: Icon(
+          Icons.send,
+        )),
+  );
+}
 
 PreferredSizeWidget? defaultAppBar({
   String? title,
   required BuildContext context,
   List<Widget>? actions,
-
 }) =>
     AppBar(
       title: Text(
         title!,
       ),
       titleSpacing: 5,
-
       actions: actions,
       leading: IconButton(
         onPressed: () {
           Navigator.pop(context);
         },
-        icon: Icon(Icons.arrow_back_ios, size: 16,),
+        icon: Icon(
+          Icons.arrow_back_ios,
+          size: 16,
+        ),
       ),
     );
-
 
 Widget defaultButton({
   double wid = double.infinity,
@@ -692,7 +587,6 @@ Widget defaultButton({
       ),
       child: MaterialButton(
         onPressed: function,
-
         child: Text(
           isUpperCase ? text.toUpperCase() : text,
           style: TextStyle(
@@ -706,14 +600,11 @@ Widget defaultTextButton({
   required VoidCallback? function,
   required String text,
   double wid = 100,
-
 }) =>
     TextButton(
         onPressed: function,
         child: Text(
           text.toUpperCase(),
-
-
         ));
 
 void showToast({
@@ -747,5 +638,3 @@ Color chooseToastColor(ToastStates state) {
   }
   return color;
 }
-
-

@@ -19,6 +19,8 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    HomeCubit.get(context).getPostsData();
+
     return BlocProvider(
       create: (context) => SocialLoginCubit(),
       child: BlocConsumer<SocialLoginCubit, SocialLoginStates>(
@@ -108,6 +110,7 @@ class LoginScreen extends StatelessWidget {
                                   defaultButton(
                                       function: () {
                                         if (formKey.currentState!.validate()) {
+
                                           SocialLoginCubit.get(context).userLogin(
                                               email: emailController.text,
                                               password:passwordController.text);

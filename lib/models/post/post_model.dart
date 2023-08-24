@@ -1,3 +1,5 @@
+import 'comment_model.dart';
+
 class PostModel {
   String? uId;
   String? name;
@@ -5,6 +7,8 @@ class PostModel {
   String? image;
   String? text;
   String? postImage;
+  List<dynamic> comments=[];
+  List<dynamic> likes=[];
 
   PostModel({
          this.uId,
@@ -12,16 +16,20 @@ class PostModel {
         this.image,
         this.dateTime,
         this.text,
-        this.postImage
+        this.postImage,
+     required this.comments,
+     required this.likes,
   });
 
-  PostModel.fromJson(Map<String, dynamic> json) {
+  PostModel.fromJson(Map<dynamic, dynamic> json) {
     uId = json['uId'];
     name = json['name'];
     text = json['text'];
     postImage = json['postImage'];
     image = json['image'];
     dateTime = json['dateTime'];
+    comments = json['comments'];
+    likes = json['likes'];
 
   }
 
@@ -30,9 +38,11 @@ class PostModel {
       'uId': uId,
       'name': name,
       'text': text,
-      'image': image,
+      'postImage': postImage,
       'image': image,
       'dateTime': dateTime,
+      'comments': comments,
+      'likes': likes,
     };
   }
 }

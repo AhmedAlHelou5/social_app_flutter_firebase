@@ -19,14 +19,21 @@ class FeedsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Builder(
       builder: (context) {
-        HomeCubit.get(context).getPostsData();
+        // HomeCubit.get(context).getPostsData();
+
         return BlocConsumer<HomeCubit, HomeStates>(
             listener: (context, state) {
               // TODO: implement listener
+              if(state is HomeCreatePostSuccessState)
+                HomeCubit.get(context).getPostsData();
+              if(state is HomeLikePostSuccessState || state is HomeDisLikePostSuccessState)
+                HomeCubit.get(context).getPostsData();
+
 
             },
             builder: (context, state) {
               var cubit = HomeCubit.get(context);
+              // cubit.getPostsData();
               return ConditionalBuilder(
                 condition:  cubit.posts.length > 0 ,
                 fallback: (BuildContext context) => Center(child: CircularProgressIndicator(),),
@@ -63,14 +70,18 @@ class FeedsScreen extends StatelessWidget {
                           ),
                           ListView.separated(
                             itemBuilder: (context, index) {
-
                             commentController.add(new TextEditingController());
-                              return buildPostItem(
+                            // cubit.getComments(postId:cubit.postsId[index]);
+
+                            //
+                            // HomeCubit.get(context).getComments(postId:HomeCubit
+                            //     .get(context)
+                            //     .postsId[index]);
+                            return buildPostItem(
                                 cubit.posts[index],
                                 context,
                                 index,
-                                commentController[index]??0, cubit.likes[index]??0,
-                                cubit.commentsLength[index]??0,
+                                commentController[index] ,
 
                               );
 

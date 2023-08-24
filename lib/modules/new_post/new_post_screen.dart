@@ -16,11 +16,11 @@ class NewPostScreen extends StatelessWidget {
     return BlocConsumer<HomeCubit, HomeStates>(
       listener: (context, state) {
         // TODO: implement listener
-        if(state is HomeCreatePostSuccessState){
-          Navigator.pop(context);
-          HomeCubit.get(context).getPostsData();
-
-        }
+        // if(state is HomeCreatePostSuccessState){
+        //   Navigator.pop(context);
+        //   // HomeCubit.get(context).getPostsData();
+        //
+        // }
 
       },
       builder: (context, state) {
@@ -33,7 +33,10 @@ class NewPostScreen extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: defaultTextButton(
                   function: () {
+
                     cubit.checkImageInPost(text:postController.text ,dateTime:now );
+                    Navigator.of(context).pop();
+
                   },
                   text: 'Post'),
             ),
@@ -55,12 +58,12 @@ class NewPostScreen extends StatelessWidget {
                         CircleAvatar(
                           radius: 25,
                           backgroundImage: NetworkImage(
-                              'https://img.freepik.com/free-photo/medium-shot-man-wearing-vr-glasses_23-2150394443.jpg?w=740&t=st=1690229899~exp=1690230499~hmac=e81f5c4710b5034d87c71706507c4077cd17de4289a314415c46c8585640184b'),
+                            '${cubit.model!.image}',),
                         ),
                         SizedBox(width: 15),
                         Expanded(
                           child: Text(
-                            'Ahmed Al Helou',
+                            '${cubit.model!.name}',
                             style: TextStyle(height: 1.4, fontSize: 17),
                           ),
                         ),

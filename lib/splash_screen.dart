@@ -10,8 +10,13 @@ import 'layout/home/home_layout.dart';
 import 'modules/login/login_screen.dart';
 
 class SplashScreen extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
+    HomeCubit.get(context)
+      ..getUserData()
+      ..getAllUsers()
+      ..getPostsData();
     var login = CacheHelper.getData(key: 'login');
     uId = CacheHelper.getData(key: 'uId');
     final Widget? startWidget;

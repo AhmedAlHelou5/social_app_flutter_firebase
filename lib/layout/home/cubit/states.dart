@@ -57,12 +57,29 @@ class HomeRemovePostImageState extends HomeStates {}
 
 
 
+class HomeGetPostsForUserLoadingState extends HomeStates {}
+class HomeGetPostsForUserSuccessState extends HomeStates {}
+class HomeGetPostsForUserErrorState extends HomeStates {}
+
+
+
 class HomeGetPostsSuccessState extends HomeStates {}
 class HomeGetPostsLoadingState extends HomeStates {}
 class HomeGetPostsErrorState extends HomeStates {
   final String error;
   HomeGetPostsErrorState(this.error);
 }
+
+
+class HomeGetPostsProfileSuccessState extends HomeStates {}
+class HomeGetPostsProfileLoadingState extends HomeStates {}
+class HomeGetPostsProfileErrorState extends HomeStates {
+  final String error;
+  HomeGetPostsProfileErrorState(this.error);
+}
+
+
+
 
 class HomeLikePostSuccessState extends HomeStates {}
 class HomeCheckLikePostState extends HomeStates {}
