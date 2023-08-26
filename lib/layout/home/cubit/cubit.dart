@@ -154,6 +154,9 @@ class HomeCubit extends Cubit<HomeStates> {
     });
   }
 
+
+
+
   void updateUser({
     required String? name,
     required String? phone,
@@ -188,6 +191,27 @@ class HomeCubit extends Cubit<HomeStates> {
       emit(HomeUserUpdateErrorState());
     });
   }
+
+
+
+
+  void getUser({id}){
+    FirebaseFirestore.instance.collection('users').doc(id).get().then((value) {
+      model = UserModel.fromJson(value.data()!);
+      emit(HomeGetUserSuccessState());
+    }).catchError((error) {
+      print(error.toString());
+      emit(HomeErrorState(error.toString()));
+    });
+
+  }
+
+
+
+
+
+
+
 
   int currentIndex = 0;
 
@@ -326,29 +350,30 @@ class HomeCubit extends Cubit<HomeStates> {
       emit(HomeUserUpdateErrorState());
     });
 
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(model!.uId)
-        .collection('posts')
-        .add({
-      'name': postModel!.name,
-      'image': postModel!.image,
-      'uId': postModel!.uId,
-      'dateTime': postModel!.dateTime,
-      'text': postModel!.text,
-      'postImage': postModel!.postImage,
-      'comments': [],
-      'likes': []
-    }).then((value) {
-      emit(HomeCreatePostSuccessState());
-      // getPostsData();
-    }).catchError((error) {
-      print(error.toString());
-      emit(HomeUserUpdateErrorState());
-    });
+    // FirebaseFirestore.instance
+    //     .collection('users')
+    //     .doc(model!.uId)
+    //     .collection('posts')
+    //     .add({
+    //   'name': postModel!.name,
+    //   'image': postModel!.image,
+    //   'uId': postModel!.uId,
+    //   'dateTime': postModel!.dateTime,
+    //   'text': postModel!.text,
+    //   'postImage': postModel!.postImage,
+    //   'comments': [],
+    //   'likes': []
+    // }).then((value) {
+    //   emit(HomeCreatePostSuccessState());
+    //   // getPostsData();
+    // }).catchError((error) {
+    //   print(error.toString());
+    //   emit(HomeUserUpdateErrorState());
+    // });
   }
 
   List<PostModel?> posts = [];
+  // List<dynamic> comments = [];
   List<UserModel?> users = [];
   List<String?> postsId = [];
 
@@ -386,6 +411,16 @@ class HomeCubit extends Cubit<HomeStates> {
   }
 
 
+
+
+
+
+
+
+
+
+
+
   void removePostImage() {
     imagePostFile = null;
     emit(HomeRemovePostImageState());
@@ -409,6 +444,9 @@ class HomeCubit extends Cubit<HomeStates> {
     }
   }
 
+
+
+
   void getPostsData() {
     emit(HomeGetPostsLoadingState());
     FirebaseFirestore.instance
@@ -417,7 +455,7 @@ class HomeCubit extends Cubit<HomeStates> {
         .get()
         .then((value) {
       posts = [];
-      // commentsLength=[];
+      // comments=[];
 
       value.docs.forEach(
         (result) {
@@ -426,15 +464,11 @@ class HomeCubit extends Cubit<HomeStates> {
             PostModel.fromJson(
               result.data(),
             ),
+
           );
+
           print(result.data());
-          //like
-          // result.reference.collection('likes').get().then((value) {
-          //
-          //   likes.add(value.docs.length);
-          //
-          // });
-          // print('${ commentsLength }: commentsLength');
+
 
           emit(HomeGetPostsSuccessState());
           //
@@ -445,6 +479,14 @@ class HomeCubit extends Cubit<HomeStates> {
       emit(HomeGetPostsErrorState(error.toString()));
     });
   }
+
+
+
+
+
+
+
+
 
   void getPostForSettings() {
     emit(HomeGetPostsLoadingState());
@@ -617,10 +659,19 @@ class HomeCubit extends Cubit<HomeStates> {
 
   void likePost({
     required String? postId,
+    required String? image,
     required String? uId,
+    required String? name,
   }) {
+    LikeModel likeModel = LikeModel(
+      name: name,
+      uId: uId,
+      image: image,
+      postId: postId,
+    );
+
       FirebaseFirestore.instance.collection('posts').doc(postId).update({
-        'likes': FieldValue.arrayUnion([uId])
+        'likes': FieldValue.arrayUnion([likeModel.toMap()])
       }).then((value) {
 
         buttonClicked=!buttonClicked;
@@ -636,11 +687,19 @@ class HomeCubit extends Cubit<HomeStates> {
 
   void DislikePost({
     required String? postId,
+    required String? image,
     required String? uId,
+    required String? name,
   }) {
+    LikeModel likeModel = LikeModel(
+      name: name,
+      uId: uId,
+      image: image,
+      postId: postId,
+    );
 
     FirebaseFirestore.instance.collection('posts').doc(postId).update({
-      'likes': FieldValue.arrayRemove([uId]) // if(likeModel==0)
+      'likes': FieldValue.arrayRemove([likeModel.toMap()]) // if(likeModel==0)
     }).then((value) {
 
       buttonClicked=!buttonClicked;
@@ -660,11 +719,18 @@ class HomeCubit extends Cubit<HomeStates> {
     if (buttonClicked == false )
       likePost(
           postId: postId,
-          uId: uId);
+          uId : uId,
+          image: model!.image!,
+          name: model!.name!
+
+      );
     else
       DislikePost(
           postId: postId,
-          uId:uId);
+          uId : uId,
+          image: model!.image!,
+          name: model!.name!
+      );
     }
 
 

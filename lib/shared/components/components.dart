@@ -9,6 +9,7 @@ import 'package:social_app_flutter_firebase/modules/feeds/comment_screen.dart';
 
 import '../../layout/home/cubit/cubit.dart';
 import '../../models/post/post_model.dart';
+import '../../modules/feeds/likes_screen.dart';
 import '../styles/colors/colors.dart';
 
 Widget buildDivider() => Container(
@@ -368,7 +369,15 @@ Widget buildPostItem(
               children: [
                 Expanded(
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      navigateTo(
+                          context,
+                          LikeScreen(
+                            postId: HomeCubit.get(context).postsId[index!],
+                          ));
+
+
+                    },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 5.0),
                       child: Row(
@@ -397,6 +406,8 @@ Widget buildPostItem(
                           CommentScreen(
                             postId: HomeCubit.get(context).postsId[index!],
                           ));
+                      print('HomeCubit.get(context).postsId[index!] ${HomeCubit.get(context).postsId[index!]}');
+
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 5.0),
@@ -485,6 +496,9 @@ Widget buildPostItem(
                     cubit.likePost(
                       uId: HomeCubit.get(context).model!.uId,
                       postId: postId[postId.indexOf(postId[index!])],
+                        image: model!.image!,
+                        name: model!.name!
+
                     );
                     cubit.buttonClicked = !cubit.buttonClicked;
 
@@ -492,6 +506,8 @@ Widget buildPostItem(
                     cubit.DislikePost(
                       uId: HomeCubit.get(context).model!.uId,
                       postId: postId[postId.indexOf(postId[index!])],
+                        image: model!.image!,
+                        name: model!.name!
                     );
                     cubit.buttonClicked = !cubit.buttonClicked;
 

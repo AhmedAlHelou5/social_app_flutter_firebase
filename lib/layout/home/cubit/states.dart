@@ -71,6 +71,19 @@ class HomeGetPostsErrorState extends HomeStates {
 }
 
 
+class HomeGetCommentsSuccessState extends HomeStates {}
+class HomeGetCommentsLoadingState extends HomeStates {}
+class HomeGetCommentsErrorState extends HomeStates {
+  final String error;
+  HomeGetCommentsErrorState(this.error);
+}
+
+
+
+
+
+
+
 class HomeGetPostsProfileSuccessState extends HomeStates {}
 class HomeGetPostsProfileLoadingState extends HomeStates {}
 class HomeGetPostsProfileErrorState extends HomeStates {
