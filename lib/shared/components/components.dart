@@ -138,7 +138,7 @@ Widget buildPostItem(
   PostModel? model,
   context,
   int? index,
-  commentController,
+    {commentController,isSearch = false,}
 ) {
   // bool buttonClicked = false;
 
@@ -389,7 +389,7 @@ Widget buildPostItem(
                           ),
                           SizedBox(width: 5),
                           Text(
-                            '${model.likes.length} ' ?? '0',
+                            '${model.likes!.length} ' ?? '0',
                             style: Theme.of(context).textTheme.caption,
                           ),
                         ],
@@ -421,7 +421,7 @@ Widget buildPostItem(
                           ),
                           SizedBox(width: 5),
                           Text(
-                            '${model.comments.length} comment',
+                            '${model.comments!.length} comment',
                             style: Theme.of(context).textTheme.caption,
                           ),
                         ],
@@ -440,8 +440,9 @@ Widget buildPostItem(
               width: double.infinity,
             ),
           ),
-
+          if(isSearch==false)
           Row(
+
             children: [
               CircleAvatar(
                 radius: 18,
@@ -450,7 +451,7 @@ Widget buildPostItem(
                     : Image.asset('assets/images/person.png').image,
               ),
               SizedBox(width: 15),
-
+                  if(isSearch==false)
               Expanded(
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.6,
@@ -476,6 +477,11 @@ Widget buildPostItem(
               // if( commentController.text.length > 0)
               //    SizedBox(width: 15),
               //
+              if(isSearch==true)
+                Spacer(),
+
+
+              if(isSearch==false)
               if (commentController.text.length > 0)
                 sendToComment(
                     context,
@@ -517,6 +523,7 @@ Widget buildPostItem(
 
 
                 },
+
                 child: Row(
                   children: [
                     Icon(

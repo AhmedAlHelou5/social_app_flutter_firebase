@@ -38,18 +38,18 @@ class LikeScreen extends StatelessWidget {
             physics: BouncingScrollPhysics(),
             child: ConditionalBuilder(
 
-              condition: cubit.posts[cubit.postsId.indexOf(postId)]!.likes.length > 0,
+              condition: cubit.posts[cubit.postsId.indexOf(postId)]!.likes!.length > 0,
               builder:(contex) => ListView.separated(
                 itemBuilder: (context, index) {
-                  print( cubit.posts[cubit.postsId.indexOf(postId)]!.likes[index]);
+                  print( cubit.posts[cubit.postsId.indexOf(postId)]!.likes![index]);
                   return buildLikeItem(
-                      cubit.posts[cubit.postsId.indexOf(postId)]!.likes[index],
+                      cubit.posts[cubit.postsId.indexOf(postId)]!.likes![index],
                       context,
                       index,
                       );
                 },
                 itemCount:
-                    cubit.posts[cubit.postsId.indexOf(postId)]!.likes.length,
+                    cubit.posts[cubit.postsId.indexOf(postId)]!.likes!.length,
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 separatorBuilder: (BuildContext context, int index) =>

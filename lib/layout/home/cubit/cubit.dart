@@ -37,6 +37,7 @@ class HomeCubit extends Cubit<HomeStates> {
   var messageController = TextEditingController();
   File? imageProfileFile;
   File? imageCoverFile;
+  List<dynamic>search = [];
 
   void getUserData() {
     emit(HomeGetUserLoadingState());
@@ -48,6 +49,77 @@ class HomeCubit extends Cubit<HomeStates> {
       emit(HomeErrorState(error.toString()));
     });
   }
+
+
+  // void getSearch(String value){
+  //   emit(HomeSearchLoadingState());
+  //   search=[];
+  //   DioHelper.getData(url: 'v2/top-headlines', query: {
+  //     'q':'$value',
+  //     'apiKey':'7cb6188f56054dd1a027ae47ecc4b5cc'
+  //   }).then((value) {
+  //     search = value.data['articles'];
+  //     // print(science[0]['title']);
+  //     emit(HomeSearchSuccessState());
+  //   }).catchError((error){
+  //     print(error.toString());
+  //     emit(HomeSearchErrorState(error.toString()));
+  //   });
+  // }
+  //
+
+
+
+  void getSearchPostsData(String textSearch) {
+    emit(HomeSearchLoadingState());
+    FirebaseFirestore.instance
+        .collection('posts')
+        .orderBy('dateTime', descending: true)
+        .snapshots()
+        .listen((value) {
+      search = [];
+      // comments=[];
+          print('value.docs : ${value.docs}');
+      value.docs.forEach(
+            (result) {
+      if (result.data()['text'].toLowerCase().contains(textSearch.toLowerCase())
+          || result.data()['name'].toLowerCase().contains(textSearch.toLowerCase())
+      )
+          // postsId.add(result.id);
+
+            search.add(
+            PostModel.fromJson(
+              result.data(),
+            ),
+
+          );
+
+          // print(result.data());
+
+
+          emit(HomeSearchSuccessState());
+          //
+        },
+      );
+    });
+  }
+
+
+
+
+
+  // Future<List> searchByString(String stringSearch) async {
+  // final CollectionReference _dbs = FirebaseFirestore.instance.collection('posts');
+  // QuerySnapshot? query =
+  // await _dbs.where("text", isEqualTo: stringSearch.substring(0, 1).toUpperCase()).get();
+  // List postsSearch = query.docs.
+  // map((i) => PostModel.fromJson(i as Map<String, dynamic>)).toList();
+  // return postsSearch;
+  // }
+
+
+
+
 
   void changeLength(int length) {
     if (length > 0) emit(HomeCommentSendState(length));
@@ -207,12 +279,6 @@ class HomeCubit extends Cubit<HomeStates> {
   }
 
 
-
-
-
-
-
-
   int currentIndex = 0;
 
   List<Widget> screens = [
@@ -254,9 +320,7 @@ class HomeCubit extends Cubit<HomeStates> {
   ];
 
   void changeBottomNav(int index) {
-    // if(index==0){
-    //   getPostsData();
-    // }
+
     if (index == 1) {
       getAllUsers();
     }
@@ -305,7 +369,7 @@ class HomeCubit extends Cubit<HomeStates> {
           text: text!,
         );
         emit(HomeCreatePostSuccessState());
-        // getPostsData();
+        getPostsData();
         // updateUser(name: name, phone: phone, bio: bio,cover: value);
       }).catchError((error) {
         print(error.toString());
@@ -344,7 +408,7 @@ class HomeCubit extends Cubit<HomeStates> {
       'likes': []
     }).then((value) {
       emit(HomeCreatePostSuccessState());
-      // getPostsData();
+      getPostsData();
     }).catchError((error) {
       print(error.toString());
       emit(HomeUserUpdateErrorState());
@@ -715,23 +779,6 @@ class HomeCubit extends Cubit<HomeStates> {
 
   IconData? suffix = Icons.favorite_border;
 
-  void likeOrDislikePost(postId, uId) {
-    if (buttonClicked == false )
-      likePost(
-          postId: postId,
-          uId : uId,
-          image: model!.image!,
-          name: model!.name!
-
-      );
-    else
-      DislikePost(
-          postId: postId,
-          uId : uId,
-          image: model!.image!,
-          name: model!.name!
-      );
-    }
 
 
 }

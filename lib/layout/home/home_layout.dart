@@ -7,6 +7,10 @@ import 'package:social_app_flutter_firebase/layout/home/cubit/states.dart';
 import 'package:social_app_flutter_firebase/modules/new_post/new_post_screen.dart';
 import 'package:social_app_flutter_firebase/shared/components/components.dart';
 
+import '../../modules/search/search_screen.dart';
+import 'cubit/cubit.dart';
+import 'cubit/cubit.dart';
+
 class HomeLayout extends StatelessWidget {
   const HomeLayout({Key? key}) : super(key: key);
 
@@ -27,14 +31,16 @@ class HomeLayout extends StatelessWidget {
           appBar: AppBar(
             title: Text(cubit.titles[cubit.currentIndex]),
             actions: [
+              // IconButton(
+              //   icon: Icon(Icons.notifications_rounded),
+              //   onPressed: () {
+              //
+              //   }
+              // ),
               IconButton(
-                icon: Icon(Icons.notifications_rounded),
-                onPressed: () {
-
-                }
-              ),    IconButton(
                 icon: Icon(Icons.search),
                 onPressed: () {
+                  navigateTo(context, SearchScreen());
 
                 }
               ),

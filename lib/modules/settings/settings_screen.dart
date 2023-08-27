@@ -163,7 +163,7 @@ class SettingsScreen extends StatelessWidget {
                 cubit.postsForSettings[index],
                 context,
                 index,
-                commentController[index]??0,
+                commentController: commentController[index]??0,
 
 
               );

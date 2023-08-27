@@ -14,6 +14,16 @@ class HomeGetUserErrorState extends HomeStates {
   HomeGetUserErrorState(this.error);
 }
 
+class HomeSearchSuccessState extends HomeStates {}
+class HomeSearchLoadingState extends HomeStates {}
+class HomeSearchErrorState extends HomeStates {
+  final String error;
+  HomeSearchErrorState(this.error);
+}
+
+
+
+
 
 class HomeGetAllUserSuccessState extends HomeStates {}
 class HomeGetAllUserLoadingState extends HomeStates {}

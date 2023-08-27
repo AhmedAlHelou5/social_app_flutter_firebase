@@ -165,7 +165,7 @@ class ViewProfileScreen extends StatelessWidget {
                             cubit.postsForUser[index],
                             context,
                             index,
-                            commentController[index]??0,
+                            commentController: commentController[index]??0,
 
 
                           );

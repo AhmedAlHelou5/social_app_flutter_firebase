@@ -1,3 +1,4 @@
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -35,18 +36,26 @@ class CommentScreen extends StatelessWidget {
             appBar: AppBar(title: Text('Comments'), centerTitle: true),
             body: SingleChildScrollView(
               physics: BouncingScrollPhysics(),
-              child: ListView.separated(
+              child: ConditionalBuilder(
+                condition:cubit.posts[cubit.postsId.indexOf(postId)]!.comments!.length > 0,
+              builder: (context) =>  ListView.separated(
 
                 itemBuilder: (context, index) {
 
                   return buildCommentItem(
-                       cubit.posts[cubit.postsId.indexOf(postId)]!.comments[index],  context, index,commentController);
+                      cubit.posts[cubit.postsId.indexOf(postId)]!.comments![index],  context, index,commentController);
                 },
-                itemCount:cubit.posts[cubit.postsId.indexOf(postId)]!.comments.length,
+                itemCount:cubit.posts[cubit.postsId.indexOf(postId)]!.comments!.length,
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 separatorBuilder: (BuildContext context, int index) =>
                     SizedBox(height: 8),
+              ),
+              fallback:(context) => Center(
+                child: Text('No Comments in This Post'),
+              ),
+
+
               ),
             ),
 

@@ -9,8 +9,8 @@ class PostModel {
   String? image;
   String? text;
   String? postImage;
-  List<dynamic> comments=[];
-  List<dynamic> likes=[];
+  List<dynamic>? comments;
+  List<dynamic>? likes;
 
   PostModel({
          this.uId,
@@ -19,8 +19,8 @@ class PostModel {
         this.dateTime,
         this.text,
         this.postImage,
-     required this.comments,
-     required this.likes,
+      this.comments,
+      this.likes,
   });
 
   PostModel.fromJson(Map<String, dynamic> json) {

@@ -19,7 +19,7 @@ class FeedsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Builder(
       builder: (context) {
-        // HomeCubit.get(context).getPostsData();
+        HomeCubit.get(context).getPostsData();
       // HomeCubit.get(context).  getCommentPostsData(postId)
         return BlocConsumer<HomeCubit, HomeStates>(
             listener: (context, state) {
@@ -81,7 +81,7 @@ class FeedsScreen extends StatelessWidget {
                                 cubit.posts[index],
                                 context,
                                 index,
-                                commentController[index] ,
+                               commentController:  commentController[index] ,
 
                               );
 

@@ -17,8 +17,8 @@ class NewPostScreen extends StatelessWidget {
       listener: (context, state) {
         // TODO: implement listener
         // if(state is HomeCreatePostSuccessState){
-        //   Navigator.pop(context);
-        //   // HomeCubit.get(context).getPostsData();
+        //   // Navigator.pop(context);
+        //   HomeCubit.get(context).getPostsData();
         //
         // }
 
