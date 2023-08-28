@@ -11,6 +11,7 @@ import '../../layout/home/cubit/cubit.dart';
 import '../../models/post/post_model.dart';
 import '../../modules/feeds/likes_screen.dart';
 import '../styles/colors/colors.dart';
+import 'constants.dart';
 
 Widget buildDivider() => Container(
       height: 24,
@@ -446,8 +447,9 @@ Widget buildPostItem(
             children: [
               CircleAvatar(
                 radius: 18,
-                backgroundImage: model.image != null || model.image != ''
-                    ? NetworkImage('${HomeCubit.get(context).model!.image}')
+                backgroundImage:
+                model.image != null || model.image != ''
+                    ? NetworkImage('${model!.image}')
                     : Image.asset('assets/images/person.png').image,
               ),
               SizedBox(width: 15),
@@ -619,16 +621,78 @@ Widget defaultButton({
       ),
     );
 
+
+
+
+
+
+Widget followAndUnfollowButton({
+  required bool isFollowing,
+  required String? id2,
+  context
+}) =>
+
+        HomeCubit.get(context).isFollowing==false ? Expanded(
+          child: defaultButton(
+              function: (){
+                HomeCubit.get(context).followUser( uid: uId,followId: id2);
+                // HomeCubit.get(context).followers! +1 ;
+
+                HomeCubit.get(context).changeFollowButton();
+              },  text: 'Follow',radius: 20,height: 40),
+        ):
+        Expanded(child: defaultTextButton(function:(){
+          HomeCubit.get(context).followUser( uid: uId,followId: id2);
+          HomeCubit.get(context).changeFollowButton();
+
+          // HomeCubit.get(context).followers! -1;
+
+
+        },  text: 'Unfollow', )
+
+        // Expanded(
+        //   child: TextButton(
+        //     onPressed: function,
+        //     child: Text(
+        //       text,
+        //       style: TextStyle(
+        //         color: isFollowing ? Colors.black : Colors.white,
+        //       ),
+        //     ),
+        //     style: ButtonStyle(
+        //       backgroundColor: MaterialStateProperty.all(
+        //         isFollowing ? Colors.grey : background,
+        //       ),
+        //     ),
+        //   ),
+        // ),
+
+    );
+
+
+
+
 Widget defaultTextButton({
   required VoidCallback? function,
   required String text,
   double wid = 100,
+  double radius = 0.0,
+  double height = 45,
 }) =>
-    TextButton(
-        onPressed: function,
-        child: Text(
-          text.toUpperCase(),
-        ));
+    Container(
+
+      width: wid,
+      height: height,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(radius),
+      ),
+      child: TextButton(
+          onPressed: function,
+          child: Text(
+            text.toUpperCase(),
+
+          )),
+    );
 
 void showToast({
   required String text,
