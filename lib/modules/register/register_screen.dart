@@ -7,6 +7,8 @@ import 'package:social_app_flutter_firebase/modules/register/cubit/cubit.dart';
 import 'package:social_app_flutter_firebase/modules/register/cubit/states.dart';
 
 import '../../shared/components/components.dart';
+import '../../shared/components/constants.dart';
+import '../../shared/network/local/cache_helper.dart';
 
 class RegisterScreen extends StatelessWidget {
   RegisterScreen({Key? key}) : super(key: key);
@@ -26,7 +28,13 @@ class RegisterScreen extends StatelessWidget {
           // TODO: implement listener
           if (state is SocialCreateUserSuccessState) {
             navigateAndFinish(context, HomeLayout());
+
           }
+          if (state is SocialRegisterSuccessState) {
+            CacheHelper.saveData(key: 'uId', value: state.uId).then((value) {
+            });
+          }
+
         },
         builder: (context, state) {
           return Scaffold(

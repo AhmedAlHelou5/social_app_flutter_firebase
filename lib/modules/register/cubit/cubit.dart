@@ -37,8 +37,8 @@ class SocialRegisterCubit extends Cubit<SocialRegisterStates> {
       print(value.user!.uid);
       userCreate(name: name, email: email, phone: phone, uId: value.user!.uid);
 
-      emit(SocialRegisterSuccessState());
-      navigateAndFinish(context, LoginScreen());
+      emit(SocialRegisterSuccessState(value.user!.uid));
+      // navigateAndFinish(context, LoginScreen());
     }).catchError((error) {
       emit(SocialRegisterErrorState(error.toString()));
     });
@@ -56,8 +56,10 @@ class SocialRegisterCubit extends Cubit<SocialRegisterStates> {
       email: email,
       phone: phone,
       bio: 'write you bio ...',
-      image: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
-      cover: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Emblem-person-blue.svg/2048px-Emblem-person-blue.svg.png',
+      cover: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Emblem-person-blue.svg/2048px-Emblem-person-blue.svg.png',
+      followers:[] ,
+      following: [],
       isEmailVerified: false,
     );
     FirebaseFirestore.instance

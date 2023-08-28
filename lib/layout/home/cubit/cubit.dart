@@ -11,6 +11,7 @@ import 'package:social_app_flutter_firebase/models/user/user_model.dart';
 import 'package:social_app_flutter_firebase/modules/new_post/new_post_screen.dart';
 import 'package:social_app_flutter_firebase/modules/settings/settings_screen.dart';
 
+import '../../../models/followers/follow_model.dart';
 import '../../../models/message/message_model.dart';
 import '../../../models/post/like_model.dart';
 import '../../../models/post/post_model.dart';
@@ -18,6 +19,7 @@ import '../../../modules/chats/chats_screen.dart';
 import '../../../modules/feeds/feeds_screen.dart';
 import '../../../modules/search/search_screen.dart';
 import '../../../modules/users/users_screen.dart';
+import '../../../shared/components/components.dart';
 import '../../../shared/components/constants.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
@@ -42,7 +44,7 @@ class HomeCubit extends Cubit<HomeStates> {
   void getUserData() {
     emit(HomeGetUserLoadingState());
     FirebaseFirestore.instance.collection('users').doc(uId).get().then((value) {
-      model = UserModel.fromJson(value.data()!);
+      model = UserModel.fromJson(value.data()!) as dynamic;
       emit(HomeGetUserSuccessState());
     }).catchError((error) {
       print(error.toString());
@@ -50,23 +52,6 @@ class HomeCubit extends Cubit<HomeStates> {
     });
   }
 
-
-  // void getSearch(String value){
-  //   emit(HomeSearchLoadingState());
-  //   search=[];
-  //   DioHelper.getData(url: 'v2/top-headlines', query: {
-  //     'q':'$value',
-  //     'apiKey':'7cb6188f56054dd1a027ae47ecc4b5cc'
-  //   }).then((value) {
-  //     search = value.data['articles'];
-  //     // print(science[0]['title']);
-  //     emit(HomeSearchSuccessState());
-  //   }).catchError((error){
-  //     print(error.toString());
-  //     emit(HomeSearchErrorState(error.toString()));
-  //   });
-  // }
-  //
 
 
 
@@ -108,17 +93,12 @@ class HomeCubit extends Cubit<HomeStates> {
 
 
 
-  // Future<List> searchByString(String stringSearch) async {
-  // final CollectionReference _dbs = FirebaseFirestore.instance.collection('posts');
-  // QuerySnapshot? query =
-  // await _dbs.where("text", isEqualTo: stringSearch.substring(0, 1).toUpperCase()).get();
-  // List postsSearch = query.docs.
-  // map((i) => PostModel.fromJson(i as Map<String, dynamic>)).toList();
-  // return postsSearch;
-  // }
-
-
-
+  // bool isFollow = false;
+  void changeFollowButton() {
+    isFollowing  =! isFollowing;
+    print(isFollowing);
+    emit(HomeChangeButtonFollowState());
+  }
 
 
   void changeLength(int length) {
@@ -436,9 +416,41 @@ class HomeCubit extends Cubit<HomeStates> {
     // });
   }
 
+
+
+
+  // void followUser({
+  //    String? id,
+  //    String? name,
+  //   String? image,
+  // }) {
+  //   FollowModel? postModel = FollowModel(
+  //     followers: [],
+  //     following: [],
+  //   );
+  //
+  //   FirebaseFirestore.instance.collection('follow').doc(model!.uId).add({
+  //     'followers': [],
+  //     'following': []
+  //   }).then((value) {
+  //     emit(HomeCreatePostSuccessState());
+  //   }).catchError((error) {
+  //     print(error.toString());
+  //     emit(HomeUserUpdateErrorState());
+  //   });
+  //
+  //
+  // }
+
+
+
+
+
+
+
   List<PostModel?> posts = [];
   // List<dynamic> comments = [];
-  List<UserModel?> users = [];
+  List<UserModel> users = [];
   List<String?> postsId = [];
 
   // List<int> likes = [];
@@ -624,9 +636,9 @@ class HomeCubit extends Cubit<HomeStates> {
 
   void getAllUsers() {
     emit(HomeGetAllUserLoadingState());
-    users = [];
+    // users = [];
 
-    // if (users.length == 0)
+    if (users.length == 0)
     FirebaseFirestore.instance.collection('users').get().then((value) {
       value.docs.forEach(
         (result) {
@@ -635,9 +647,13 @@ class HomeCubit extends Cubit<HomeStates> {
               UserModel.fromJson(
                 result.data(),
               ),
+
             );
+          print('getalluser////////////: ${users}');
+
         },
       );
+      print('getalluser////////////: ${users}');
       emit(HomeGetAllUserSuccessState());
     }).catchError((error) {
       print(error.toString());
@@ -777,8 +793,179 @@ class HomeCubit extends Cubit<HomeStates> {
     });
   }
 
-  IconData? suffix = Icons.favorite_border;
+  // IconData? suffix = Icons.favorite_border;
 
 
 
+  // void followUser(id) {
+  //   FollowModel followModel = FollowModel(
+  //     uId: model!.uId
+  //   );
+  //
+  //   print(followModel.toString());
+  //
+  //     FirebaseFirestore.instance.collection('follow').doc(id).set({
+  //       'followers': FieldValue.arrayUnion([followModel.toMap()]),
+  //     }).then((value) {
+  //       emit(HomeFollowUserSuccessState());
+  //       getFollowerForUser(id);
+  //
+  //     }).catchError((error) {
+  //       print(error.toString());
+  //       emit(HomeFollowUserErrorState(error.toString()));
+  //     });
+  //
+  //
+  //     FirebaseFirestore.instance.collection('follow').doc(uId).set({
+  //       'following': FieldValue.arrayUnion([id]),
+  //
+  //     }).then((value) {
+  //       // buttonClicked=!buttonClicked;
+  //       getFollowerForUser(uId);
+  //       emit(HomeFollowUserSuccessState());
+  //
+  //       // getPostsData();
+  //     }).catchError((error) {
+  //       print(error.toString());
+  //       emit(HomeFollowUserErrorState(error.toString()));
+  //     });
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  // }
+
+
+  //
+  //
+  // void unFollowUser(id) {
+  //   FollowModel unFollowModel = FollowModel(
+  //     uId: model!.uId
+  //   );
+  //   print(unFollowModel.toString());
+  //
+  //   FirebaseFirestore.instance.collection('follow').doc(id).set({
+  //     'followers': FieldValue.arrayRemove([unFollowModel.toMap()]),
+  //
+  //   }).then((value) {
+  //     emit(HomeFollowUserSuccessState());
+  //     getFollowerForUser(id);
+  //
+  //   }).catchError((error) {
+  //     print(error.toString());
+  //     emit(HomeUnFollowUserErrorState(error.toString()));
+  //   });
+  //
+  //
+  //   FirebaseFirestore.instance.collection('follow').doc(uId).set({
+  //     'following': FieldValue.arrayRemove([id]),
+  //
+  //   }).then((value) {
+  //     // buttonClicked=!buttonClicked;
+  //     getFollowerForUser(id);
+  //     emit(HomeFollowUserSuccessState());
+  //
+  //     // getPostsData();
+  //   }).catchError((error) {
+  //     print(error.toString());
+  //     emit(HomeUnFollowUserErrorState(error.toString()));
+  //   });
+  //
+  //
+  //
+  //
+  // }
+
+  void followUser({String? uid, String? followId})  {
+      FirebaseFirestore.instance.collection('users').doc(uid).get().then((value) {
+        List following = [];
+        value.data()!['following'].forEach((dynamic element) {
+          following.add(element! as dynamic );
+          print(' /////////////////following ::: $following' );
+
+
+        } );
+        if (!following.contains(followId)) {
+          FirebaseFirestore.instance.collection('users').doc(followId).update({
+            'followers': FieldValue.arrayUnion([uid])
+          });
+
+          FirebaseFirestore.instance.collection('users').doc(uid).update({
+            'following': FieldValue.arrayUnion([followId])
+          });
+
+          emit(HomeFollowUserSuccessState());
+          // emit(HomeInitialState());
+          // getFollowerForUser(followId);
+          // getFollowerForUser(uid);
+        } else {
+          FirebaseFirestore.instance.collection('users').doc(followId).update({
+            'followers': FieldValue.arrayRemove([uid])
+          });
+
+          FirebaseFirestore.instance.collection('users').doc(uid).update({
+            'following': FieldValue.arrayRemove([followId])
+          });
+          // getFollowerForUser(uid);
+          // getFollowerForUser(followId);
+          // emit(HomeInitialState());
+
+          emit(HomeUnFollowUserSuccessState());
+          // getFollowerForUser(followId);
+          // getFollowerForUser(uid);
+        }
+
+        getFollowerForUser(uid);
+
+      }).catchError((e) {
+        print(e.toString());
+        emit(HomeFollowUserErrorState(e.toString()));
+      });
+
+  }
+
+
+  dynamic followers  ;
+  dynamic following ;
+  bool isFollowing = false;
+
+  void getFollowerForUser(id) {
+    emit(HomeGetFollowersLoadingState());
+    followers = [] ;
+    following = [];
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(id)
+        .get().then((value) {
+      value!.data()!['followers'].forEach((dynamic element) {
+        print(element);
+        followers!.add(element! as dynamic );
+
+
+
+      } );
+      value!.data()!['following']!.forEach(( dynamic element) {
+        print(element);
+        following!.add(element! as dynamic );
+        print('followers: ${followers}');
+        print('following: $following');
+
+      } );
+    //
+    // followers = value.data()!['followers'];
+    // following = value.data()!['following'];
+    print('followers: $followers');
+    print('following: $following');
+    isFollowing = followers
+        .contains(uId);
+
+    print(followers.toString());
+
+  });
+
+
+}
 }

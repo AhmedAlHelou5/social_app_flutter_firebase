@@ -7,18 +7,25 @@ class UserModel {
   String? cover;
   String? bio;
   bool? isEmailVerified;
+   List<dynamic>? followers;
+   List<dynamic>? following;
 
   UserModel(
       { this.uId,
-      required this.name,
+       this.name,
        this.email,
-      required this.phone,
+       this.phone,
       this.image,
       this.cover,
       this.bio,
-      this.isEmailVerified});
+      this.isEmailVerified,
+      this.followers,
+      this.following
+      });
 
   UserModel.fromJson(Map<String, dynamic> json) {
+    var followersList = json['followers'];
+    var followingList = json['following'];
     uId = json['uId'];
     name = json['name'];
     email = json['email'];
@@ -27,6 +34,11 @@ class UserModel {
     cover = json['cover'];
     bio = json['bio'];
     isEmailVerified = json['isEmailVerified'];
+    followers = followersList.map((i) => UserModel.fromJson(i)).toList();
+    following = followingList.map((i) => UserModel.fromJson(i)).toList();
+    // following = json['following'];
+    // likes =  likes =likeList.map((i) => LikeModel.fromJson(i)).toList();
+
   }
 
   Map<String, dynamic> toMap() {
@@ -39,6 +51,8 @@ class UserModel {
       'cover': cover,
       'bio': bio,
       'isEmailVerified': isEmailVerified,
+      'followers': followers,
+      'following': following,
     };
   }
 }

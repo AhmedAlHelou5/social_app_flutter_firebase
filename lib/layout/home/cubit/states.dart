@@ -80,6 +80,22 @@ class HomeGetPostsErrorState extends HomeStates {
   HomeGetPostsErrorState(this.error);
 }
 
+class HomeGetFollowersSuccessState extends HomeStates {}
+class HomeGetFollowersLoadingState extends HomeStates {}
+class HomeGetFollowersErrorState extends HomeStates {
+  final String error;
+  HomeGetFollowersErrorState(this.error);
+}
+
+class HomeGetFollowingSuccessState extends HomeStates {}
+class HomeGetFollowingLoadingState extends HomeStates {}
+class HomeGetFollowingErrorState extends HomeStates {
+  final String error;
+  HomeGetFollowingErrorState(this.error);
+}
+
+
+
 
 class HomeGetCommentsSuccessState extends HomeStates {}
 class HomeGetCommentsLoadingState extends HomeStates {}
@@ -141,6 +157,22 @@ class HomeSendMessageErrorState extends HomeStates {
 }
 
 class HomeGetMessagesSuccessState extends HomeStates {}
+
+
+class HomeChangeButtonFollowState extends HomeStates {}
+
+
+class HomeFollowUserSuccessState extends HomeStates {}
+class HomeFollowUserErrorState extends HomeStates {
+  final String error;
+  HomeFollowUserErrorState(this.error);
+}
+class HomeUnFollowUserSuccessState extends HomeStates {}
+class HomeUnFollowUserErrorState extends HomeStates {
+  final String error;
+  HomeUnFollowUserErrorState(this.error);
+}
+
 // class HomeGetMessagesErrorState extends HomeStates {}
 
 
