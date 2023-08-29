@@ -17,6 +17,8 @@ class HomeLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     HomeCubit.get(context).getPostsData();
+    HomeCubit.get(context).getAllUsers() ;
+
 
     return BlocConsumer<HomeCubit, HomeStates>(
       listener: (context, state) {

@@ -27,12 +27,11 @@ class RegisterScreen extends StatelessWidget {
         listener: (context, state) {
           // TODO: implement listener
           if (state is SocialCreateUserSuccessState) {
-            navigateAndFinish(context, HomeLayout());
+            navigateAndFinish(context, LoginScreen());
 
           }
           if (state is SocialRegisterSuccessState) {
-            CacheHelper.saveData(key: 'uId', value: state.uId).then((value) {
-            });
+            navigateAndFinish(context, LoginScreen());
           }
 
         },

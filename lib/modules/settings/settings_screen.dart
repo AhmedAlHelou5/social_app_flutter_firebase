@@ -1,6 +1,9 @@
+import 'package:cool_alert/cool_alert.dart';
+import 'package:dialogs/dialogs/choice_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_app_flutter_firebase/layout/home/cubit/states.dart';
+import 'package:social_app_flutter_firebase/modules/login/login_screen.dart';
 import 'package:social_app_flutter_firebase/shared/components/components.dart';
 
 import '../../layout/home/cubit/cubit.dart';
@@ -14,6 +17,7 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     HomeCubit.get(context).getPostForSettings();
+
 
     return BlocConsumer<HomeCubit, HomeStates>(
   listener: (context, state) {
@@ -50,7 +54,7 @@ class SettingsScreen extends StatelessWidget {
                         topRight: Radius.circular(4),),
                       image: DecorationImage(
                         image: NetworkImage(
-                          '${model!.cover}',
+                          '${cubit.model!.cover!}',
                         ),
                         fit: BoxFit.cover,
                       )),
@@ -62,7 +66,7 @@ class SettingsScreen extends StatelessWidget {
                   child: CircleAvatar(
                     radius: 60,
                     backgroundImage:  NetworkImage(
-                     '${model.image}',
+                     '${cubit.model!.image}',
                     ),
                   ),
                 )
@@ -71,8 +75,8 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
           SizedBox(height: 5,),
-          Text( '${model.name}',style: Theme.of(context).textTheme.bodyText1,),
-          Text( '${model.bio}',style: Theme.of(context).textTheme.caption,),
+          Text( '${cubit.model!.name}',style: Theme.of(context).textTheme.bodyText1,),
+          Text( '${cubit.model!.bio}',style: Theme.of(context).textTheme.caption,),
           Padding(
             padding:  EdgeInsets.symmetric(vertical: 15.0),
             child: Row(
@@ -97,7 +101,7 @@ class SettingsScreen extends StatelessWidget {
                       onTap: () {},
                       child: Column(
                           children: [
-                            Text('10k',style: Theme.of(context).textTheme.subtitle2,),
+                            Text('${cubit.model!.followers!.length}',style: Theme.of(context).textTheme.subtitle2,),
                             Text('Followers',style: Theme.of(context).textTheme.caption,),
 
 
@@ -111,7 +115,7 @@ class SettingsScreen extends StatelessWidget {
                       onTap: () {},
                       child: Column(
                           children: [
-                            Text('64',style: Theme.of(context).textTheme.subtitle2,),
+                            Text('${cubit.model!.following!.length}',style: Theme.of(context).textTheme.subtitle2,),
                             Text('Followings',style: Theme.of(context).textTheme.caption,),
 
 
@@ -143,12 +147,28 @@ class SettingsScreen extends StatelessWidget {
                     )
                 ),
                 SizedBox(width: 10,),
-                // OutlinedButton(
-                //   onPressed: () {
-                //     navigateTo(context, EditProfileScreen());
-                //   },
-                //   child: Icon(Icons.edit,size: 16,),
-                // )
+                OutlinedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.red),
+                  ),
+                  onPressed: () {
+
+                    final choice = ChoiceDialog(
+                      dialogBackgroundColor: Colors.white,
+                      buttonCancelText: 'No',
+                      buttonOkText: 'Yes',
+                      buttonOkOnPressed: ()=>signOut(context),
+                      title: 'Are you sure?',
+                      message: 'Do you want to logout !',
+                      buttonCancelOnPressed: () {
+                        Navigator.pop(context);
+                      },
+                    );
+                    choice.show(context);
+
+                  },
+                  child: Icon(Icons.exit_to_app,size: 20,color: Colors.white,),
+                )
               ]
             ),
           ),
@@ -156,7 +176,7 @@ class SettingsScreen extends StatelessWidget {
           SizedBox(height: 10,),
           ListView.separated(
             itemBuilder: (context, index) {
-              print(cubit.postsForSettings.length);
+              print('cubit.postsForSettings.length ${cubit.postsForSettings.length}');
 
               commentController.add(new TextEditingController());
               return buildPostItem(
@@ -164,6 +184,8 @@ class SettingsScreen extends StatelessWidget {
                 context,
                 index,
                 commentController: commentController[index]??0,
+                isSearch: false,
+
 
 
               );

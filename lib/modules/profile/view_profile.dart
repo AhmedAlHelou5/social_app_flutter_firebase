@@ -17,21 +17,24 @@ class ViewProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
         HomeCubit.get(context).getPostForUser(model!.uId);
+        var postsForUser = HomeCubit.get(context).postsForUser;
+
         return BlocConsumer<HomeCubit, HomeStates>(
           listener: (context, state) {
             // TODO: implement listener
-            if(state is HomeCreatePostSuccessState)
-              HomeCubit.get(context).getPostsData();
-            if(state is HomeLikePostSuccessState || state is HomeDisLikePostSuccessState)
-              HomeCubit.get(context).getPostsData();
+            // if(state is HomeCreatePostSuccessState)
+            //   HomeCubit.get(context).getPostsData();
+            // if(state is HomeLikePostSuccessState || state is HomeDisLikePostSuccessState)
+            //   HomeCubit.get(context).getPostsData();
 
           },
           builder: (context, state) {
             var cubit = HomeCubit.get(context);
+            // cubit.getPostForUser(model!.uId);
 
-            var postsForUser = HomeCubit.get(context).postsForUser;
 
             print(postsForUser.length);
+            // cubit.getFollowerForUser(model!.uId);
 
             // cubit.getPostsProfileData(model!.uId);
 
@@ -41,12 +44,7 @@ class ViewProfileScreen extends StatelessWidget {
               appBar: AppBar(
                 title: Text('Profile'),
                 actions: [
-                  IconButton(
-                      icon: Icon(Icons.notifications_rounded),
-                      onPressed: () {
-
-                      }
-                  ),    IconButton(
+                 IconButton(
                       icon: Icon(Icons.search),
                       onPressed: () {
 
@@ -125,7 +123,7 @@ class ViewProfileScreen extends StatelessWidget {
                                   onTap: () {},
                                   child: Column(
                                       children: [
-                                        Text('10k',style: Theme.of(context).textTheme.subtitle2,),
+                                        Text('${model!.followers!.length}',style: Theme.of(context).textTheme.subtitle2,),
                                         Text('Followers',style: Theme.of(context).textTheme.caption,),
 
 
@@ -139,7 +137,7 @@ class ViewProfileScreen extends StatelessWidget {
                                   onTap: () {},
                                   child: Column(
                                       children: [
-                                        Text('64',style: Theme.of(context).textTheme.subtitle2,),
+                                        Text('${model!.following!.length}',style: Theme.of(context).textTheme.subtitle2,),
                                         Text('Followings',style: Theme.of(context).textTheme.caption,),
 
 
@@ -152,6 +150,10 @@ class ViewProfileScreen extends StatelessWidget {
 
                       ),
 
+                      // followAndUnfollowButton(isFollowing: cubit.isFollowing,id1: cubit.model!.uId ,
+                      //   id2: model!.uId,context:
+                      // context,),
+                      //
                       Divider(color: Colors.grey,height: 2,endIndent: 30,indent: 30,),
 
                       SizedBox(height: 10,),
@@ -165,9 +167,7 @@ class ViewProfileScreen extends StatelessWidget {
                             cubit.postsForUser[index],
                             context,
                             index,
-                            commentController: commentController[index]??0,
-
-
+                            commentController: commentController[index],
                           );
 
 

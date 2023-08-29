@@ -136,7 +136,7 @@ Widget buildMyMessage(MessageModel message, context, {Key? key}) => Align(
     );
 
 Widget buildPostItem(
-  PostModel? model,
+    model,
   context,
   int? index,
     {commentController,isSearch = false,}
@@ -374,7 +374,7 @@ Widget buildPostItem(
                       navigateTo(
                           context,
                           LikeScreen(
-                            postId: HomeCubit.get(context).postsId[index!],
+                            postId: model!.postsId[index!],
                           ));
 
 
@@ -390,7 +390,7 @@ Widget buildPostItem(
                           ),
                           SizedBox(width: 5),
                           Text(
-                            '${model.likes!.length} ' ?? '0',
+                            '${model.likes!.length} ' ,
                             style: Theme.of(context).textTheme.caption,
                           ),
                         ],
@@ -405,9 +405,9 @@ Widget buildPostItem(
                       navigateTo(
                           context,
                           CommentScreen(
-                            postId: HomeCubit.get(context).postsId[index!],
+                            postId:model.postsId[index!],
                           ));
-                      print('HomeCubit.get(context).postsId[index!] ${HomeCubit.get(context).postsId[index!]}');
+                      print('HomeCubit.get(context).postsId[index!] ${model.postsId[index!]}');
 
                     },
                     child: Padding(
@@ -489,9 +489,9 @@ Widget buildPostItem(
                     context,
                     index,
                     commentController,
-                    HomeCubit.get(context).model!.name,
-                    HomeCubit.get(context).model!.image,
-                    HomeCubit.get(context).model!.uId),
+                    model.name,
+                   model.image,
+                    uId),
 
               InkWell(
                 onTap: () {
@@ -502,7 +502,7 @@ Widget buildPostItem(
 
                   if ( cubit.buttonClicked){
                     cubit.likePost(
-                      uId: HomeCubit.get(context).model!.uId,
+                        id: uId,
                       postId: postId[postId.indexOf(postId[index!])],
                         image: model!.image!,
                         name: model!.name!
@@ -512,7 +512,7 @@ Widget buildPostItem(
 
                   }else{
                     cubit.DislikePost(
-                      uId: HomeCubit.get(context).model!.uId,
+                        id:uId,
                       postId: postId[postId.indexOf(postId[index!])],
                         image: model!.image!,
                         name: model!.name!
@@ -628,6 +628,7 @@ Widget defaultButton({
 
 Widget followAndUnfollowButton({
   required bool isFollowing,
+  required String? id1,
   required String? id2,
   context
 }) =>
@@ -635,14 +636,14 @@ Widget followAndUnfollowButton({
         HomeCubit.get(context).isFollowing==false ? Expanded(
           child: defaultButton(
               function: (){
-                HomeCubit.get(context).followUser( uid: uId,followId: id2);
+                HomeCubit.get(context).followUser( uid: id1,followId: id2);
                 // HomeCubit.get(context).followers! +1 ;
 
                 HomeCubit.get(context).changeFollowButton();
               },  text: 'Follow',radius: 20,height: 40),
         ):
         Expanded(child: defaultTextButton(function:(){
-          HomeCubit.get(context).followUser( uid: uId,followId: id2);
+          HomeCubit.get(context).followUser( uid: id1,followId: id2);
           HomeCubit.get(context).changeFollowButton();
 
           // HomeCubit.get(context).followers! -1;

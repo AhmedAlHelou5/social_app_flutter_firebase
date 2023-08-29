@@ -23,6 +23,8 @@ import '../../../shared/components/components.dart';
 import '../../../shared/components/constants.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
+import '../home_layout.dart';
+
 class HomeCubit extends Cubit<HomeStates> {
   HomeCubit() : super(HomeInitialState());
 
@@ -348,6 +350,8 @@ class HomeCubit extends Cubit<HomeStates> {
           dateTime: dateTime!,
           text: text!,
         );
+        getPostsData();
+
         emit(HomeCreatePostSuccessState());
         getPostsData();
         // updateUser(name: name, phone: phone, bio: bio,cover: value);
@@ -387,12 +391,16 @@ class HomeCubit extends Cubit<HomeStates> {
       'comments': [],
       'likes': []
     }).then((value) {
+      getPostsData();
+
       emit(HomeCreatePostSuccessState());
       getPostsData();
+
     }).catchError((error) {
       print(error.toString());
       emit(HomeUserUpdateErrorState());
     });
+    getPostsData();
 
     // FirebaseFirestore.instance
     //     .collection('users')
@@ -450,7 +458,7 @@ class HomeCubit extends Cubit<HomeStates> {
 
   List<PostModel?> posts = [];
   // List<dynamic> comments = [];
-  List<UserModel> users = [];
+  List<UserModel?> users = [];
   List<String?> postsId = [];
 
   // List<int> likes = [];
@@ -463,6 +471,7 @@ class HomeCubit extends Cubit<HomeStates> {
     required String? postId,
     required String? image,
     required String? name,
+     String? id2,
   }) {
     CommentModel commentModel = CommentModel(
       text: text!,
@@ -484,6 +493,9 @@ class HomeCubit extends Cubit<HomeStates> {
       print(error.toString());
       emit(HomeCommentPostErrorState(error.toString()));
     });
+   getPostForSettings();
+   getPostForUser(id2);
+    getPostsData();
   }
 
 
@@ -506,6 +518,7 @@ class HomeCubit extends Cubit<HomeStates> {
     dateTime,
     text,
     postImage,
+    context,
   }) {
     if (imagePostFile != null) {
       uploadPostImage(
@@ -518,6 +531,9 @@ class HomeCubit extends Cubit<HomeStates> {
         text: text!,
       );
     }
+    navigateAndFinish(context, HomeLayout());
+    emit(HomeGetPostsSuccessState());
+
   }
 
 
@@ -531,6 +547,7 @@ class HomeCubit extends Cubit<HomeStates> {
         .get()
         .then((value) {
       posts = [];
+      postsId = [];
       // comments=[];
 
       value.docs.forEach(
@@ -593,21 +610,25 @@ class HomeCubit extends Cubit<HomeStates> {
         },
       );
       emit(HomeGetPostsSuccessState());
+
     }).catchError((error) {
       print(error.toString());
       emit(HomeGetPostsErrorState(error.toString()));
     });
+    getPostsData();
+
   }
 
   void getPostForUser(id) {
     emit(HomeGetPostsLoadingState());
+    posts = [];
+    postsId = [];
+    postsForUser = [];
     FirebaseFirestore.instance
         .collection('posts')
         .orderBy('dateTime', descending: true)
         .get()
         .then((value) {
-      posts = [];
-      postsForUser = [];
 
       value.docs.forEach(
         (result) {
@@ -618,7 +639,8 @@ class HomeCubit extends Cubit<HomeStates> {
             ),
           );
           //like
-          postsForUser = [];
+          // postsForUser = [];
+          // postsForUser = [];
 
           posts.forEach((element) {
             if (element!.uId == id) {
@@ -632,13 +654,15 @@ class HomeCubit extends Cubit<HomeStates> {
       print(error.toString());
       emit(HomeGetPostsErrorState(error.toString()));
     });
+    getPostsData();
+
   }
 
   void getAllUsers() {
     emit(HomeGetAllUserLoadingState());
-    // users = [];
+    users = [];
 
-    if (users.length == 0)
+    // if (users.length == 0)
     FirebaseFirestore.instance.collection('users').get().then((value) {
       value.docs.forEach(
         (result) {
@@ -740,12 +764,14 @@ class HomeCubit extends Cubit<HomeStates> {
   void likePost({
     required String? postId,
     required String? image,
-    required String? uId,
+    required String? id,
+     String? id2,
     required String? name,
   }) {
+
     LikeModel likeModel = LikeModel(
       name: name,
-      uId: uId,
+      uId: id,
       image: image,
       postId: postId,
     );
@@ -756,11 +782,16 @@ class HomeCubit extends Cubit<HomeStates> {
 
         buttonClicked=!buttonClicked;
         getPostsData();
+
         emit(HomeLikePostSuccessState());
+
       }).catchError((error) {
         print(error.toString());
         emit(HomeLikePostErrorState(error.toString()));
       });
+    getPostForSettings();
+    getPostForUser(id2);
+    getPostsData();
 
   }
 
@@ -768,12 +799,13 @@ class HomeCubit extends Cubit<HomeStates> {
   void DislikePost({
     required String? postId,
     required String? image,
-    required String? uId,
+    required String? id,
+     String? id2,
     required String? name,
   }) {
     LikeModel likeModel = LikeModel(
       name: name,
-      uId: uId,
+      uId: id,
       image: image,
       postId: postId,
     );
@@ -791,6 +823,9 @@ class HomeCubit extends Cubit<HomeStates> {
       print(error.toString());
       emit(HomeDisLikePostErrorState(error.toString()));
     });
+    getPostForSettings();
+    getPostForUser(id2);
+    getPostsData();
   }
 
   // IconData? suffix = Icons.favorite_border;
@@ -882,8 +917,8 @@ class HomeCubit extends Cubit<HomeStates> {
   void followUser({String? uid, String? followId})  {
       FirebaseFirestore.instance.collection('users').doc(uid).get().then((value) {
         List following = [];
-        value.data()!['following'].forEach((dynamic element) {
-          following.add(element! as dynamic );
+        value.data()!['following'].forEach(( element) {
+          following.add(element!  );
           print(' /////////////////following ::: $following' );
 
 
@@ -928,28 +963,28 @@ class HomeCubit extends Cubit<HomeStates> {
   }
 
 
-  dynamic followers  ;
-  dynamic following ;
+  dynamic followers =0 ;
+  dynamic following=0 ;
   bool isFollowing = false;
 
   void getFollowerForUser(id) {
     emit(HomeGetFollowersLoadingState());
-    followers = [] ;
-    following = [];
+    // followers = [] ;
+    // following = [];
     FirebaseFirestore.instance
         .collection('users')
         .doc(id)
         .get().then((value) {
-      value!.data()!['followers'].forEach((dynamic element) {
+      value!.data()!['followers'].forEach(( element) {
         print(element);
-        followers!.add(element! as dynamic );
+        followers!.add(element!);
 
 
 
       } );
       value!.data()!['following']!.forEach(( dynamic element) {
         print(element);
-        following!.add(element! as dynamic );
+        following!.add(element! );
         print('followers: ${followers}');
         print('following: $following');
 
@@ -959,8 +994,8 @@ class HomeCubit extends Cubit<HomeStates> {
     // following = value.data()!['following'];
     print('followers: $followers');
     print('following: $following');
-    isFollowing = followers
-        .contains(uId);
+    // isFollowing = followers
+    //     .contains(model!.uId);
 
     print(followers.toString());
 

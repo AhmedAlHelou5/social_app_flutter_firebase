@@ -4,14 +4,19 @@
 // import '../network/local/cache_helper.dart';
 // import 'components.dart';
 //
+import 'package:social_app_flutter_firebase/layout/home/cubit/cubit.dart';
+
 import '../../modules/login/login_screen.dart';
 import '../network/local/cache_helper.dart';
 import 'components.dart';
 
 void signOut(context) {
+  CacheHelper.removeData(key: 'login');
+
   CacheHelper.removeData(key: 'uId').then((value) {
     if (value) {
       navigateAndFinish(context, LoginScreen());
+      HomeCubit.get(context).currentIndex = 0;
     }
   });
 }

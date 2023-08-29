@@ -13,13 +13,14 @@ class UsersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return BlocConsumer<HomeCubit, HomeStates>(
       listener: (context, state) {
         // TODO: implement listener
       },
       builder: (context, state) {
         var cubit = HomeCubit.get(context);
-        var model = HomeCubit.get(context).model;
+        // var model = HomeCubit.get(context).model;
 
         return ListView.separated(
             physics: BouncingScrollPhysics(),
@@ -30,12 +31,12 @@ class UsersScreen extends StatelessWidget {
     );
   }
 
-  Widget buildUserItem(model,context) {
-    // HomeCubit.get(context).getPostsForUser(model!.uId);
+  Widget buildUserItem( modeluser,context) {
 
     return  InkWell(
       onTap: () {
-        navigateTo(context, ViewProfileScreen(model: model));
+        HomeCubit.get(context).getPostForUser(modeluser!.uId);
+        navigateTo(context, ViewProfileScreen(model: modeluser));
       },
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -43,11 +44,11 @@ class UsersScreen extends StatelessWidget {
           CircleAvatar(
               radius: 25,
               backgroundImage: NetworkImage(
-                '${model!.image}',
+                '${modeluser!.image}',
               )),
           SizedBox(width: 15),
           Text(
-            '${model!.name}',
+            '${modeluser.name}',
             style: TextStyle(height: 1.4),
           )
         ]),

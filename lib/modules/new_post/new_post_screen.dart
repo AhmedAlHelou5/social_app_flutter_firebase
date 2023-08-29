@@ -16,11 +16,12 @@ class NewPostScreen extends StatelessWidget {
     return BlocConsumer<HomeCubit, HomeStates>(
       listener: (context, state) {
         // TODO: implement listener
-        // if(state is HomeCreatePostSuccessState){
-        //   // Navigator.pop(context);
-        //   HomeCubit.get(context).getPostsData();
-        //
-        // }
+        if(state is HomeCreatePostSuccessState){
+          // Navigator.pop(context);
+          HomeCubit.get(context).getPostsData();
+
+
+        }
 
       },
       builder: (context, state) {
@@ -34,8 +35,10 @@ class NewPostScreen extends StatelessWidget {
               child: defaultTextButton(
                   function: () {
 
-                    cubit.checkImageInPost(text:postController.text ,dateTime:now );
-                    Navigator.of(context).pop();
+                    cubit.checkImageInPost(text:postController.text ,dateTime:now ,context: context);
+
+
+                    // Navigator.of(context).pop();
 
                   },
                   text: 'Post'),

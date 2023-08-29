@@ -12,7 +12,7 @@ import '../../shared/components/components.dart';
 import '../../shared/styles/colors/colors.dart';
 
 class CommentScreen extends StatelessWidget {
-  String? postId;
+  dynamic? postId;
 
   CommentScreen({required this.postId});
 

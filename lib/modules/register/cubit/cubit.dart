@@ -37,7 +37,7 @@ class SocialRegisterCubit extends Cubit<SocialRegisterStates> {
       print(value.user!.uid);
       userCreate(name: name, email: email, phone: phone, uId: value.user!.uid);
 
-      emit(SocialRegisterSuccessState(value.user!.uid));
+      emit(SocialRegisterSuccessState());
       // navigateAndFinish(context, LoginScreen());
     }).catchError((error) {
       emit(SocialRegisterErrorState(error.toString()));
@@ -64,7 +64,7 @@ class SocialRegisterCubit extends Cubit<SocialRegisterStates> {
     );
     FirebaseFirestore.instance
         .collection('users')
-        .doc(uId!)
+        .doc(model.uId!)
         .set(model.toMap())
         .then((value) {
       emit(SocialCreateUserSuccessState());
