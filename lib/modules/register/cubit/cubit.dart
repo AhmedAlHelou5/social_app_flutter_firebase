@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social_app_flutter_firebase/layout/home/cubit/cubit.dart';
 import 'package:social_app_flutter_firebase/models/user/user_model.dart';
 
 import 'package:social_app_flutter_firebase/modules/login/cubit/states.dart';
@@ -36,6 +37,7 @@ class SocialRegisterCubit extends Cubit<SocialRegisterStates> {
       print(value.user!.email);
       print(value.user!.uid);
       userCreate(name: name, email: email, phone: phone, uId: value.user!.uid);
+      HomeCubit.get(context).getAllUsers();
 
       emit(SocialRegisterSuccessState());
       // navigateAndFinish(context, LoginScreen());
@@ -68,9 +70,11 @@ class SocialRegisterCubit extends Cubit<SocialRegisterStates> {
         .set(model.toMap())
         .then((value) {
       emit(SocialCreateUserSuccessState());
+
     }).catchError((error) {
       emit(SocialCreateUserErrorState(error.toString()));
     });
+
   }
 
   IconData suffix = Icons.visibility_outlined;

@@ -69,7 +69,10 @@ class HomeRemovePostImageState extends HomeStates {}
 
 class HomeGetPostsForUserLoadingState extends HomeStates {}
 class HomeGetPostsForUserSuccessState extends HomeStates {}
-class HomeGetPostsForUserErrorState extends HomeStates {}
+class HomeGetPostsForUserErrorState extends HomeStates {
+  final String error;
+  HomeGetPostsForUserErrorState(this.error);
+}
 
 
 

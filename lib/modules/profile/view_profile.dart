@@ -2,51 +2,57 @@ import 'package:conditional_builder_null_safety/conditional_builder_null_safety.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_app_flutter_firebase/models/user/user_model.dart';
+import 'package:social_app_flutter_firebase/modules/chats/chat_details_screen.dart';
+import 'package:social_app_flutter_firebase/modules/users/users_screen.dart';
 
 import '../../layout/home/cubit/cubit.dart';
 import '../../layout/home/cubit/states.dart';
 import '../../shared/components/components.dart';
+import '../../shared/components/constants.dart';
 import '../edit_profile/edit_profile_screen.dart';
+import '../search/search_screen.dart';
 
 class ViewProfileScreen extends StatelessWidget {
-  UserModel?   model;
+  dynamic   model;
 
   ViewProfileScreen({required this.model});
   List<TextEditingController> commentController = [];
 
   @override
   Widget build(BuildContext context) {
-        HomeCubit.get(context).getPostForUser(model!.uId);
-        var postsForUser = HomeCubit.get(context).postsForUser;
-
+    HomeCubit.get(context).getPostForViewProfile(model);
+    HomeCubit.get(context).getFollowerForUser(model!.uId);
+    // HomeCubit.get(context).getFollowerForUser(id2);
+    // var postsForUser = HomeCubit.get(context).postsForUser;
         return BlocConsumer<HomeCubit, HomeStates>(
+
           listener: (context, state) {
             // TODO: implement listener
-            // if(state is HomeCreatePostSuccessState)
-            //   HomeCubit.get(context).getPostsData();
-            // if(state is HomeLikePostSuccessState || state is HomeDisLikePostSuccessState)
-            //   HomeCubit.get(context).getPostsData();
+            // if(state is HomeChangeButtonFollowState){
+            //   HomeCubit.get(context).getFollowerForUser(model!.uId);
+            // }
 
           },
           builder: (context, state) {
             var cubit = HomeCubit.get(context);
-            // cubit.getPostForUser(model!.uId);
-
-
-            print(postsForUser.length);
-            // cubit.getFollowerForUser(model!.uId);
-
-            // cubit.getPostsProfileData(model!.uId);
-
-            // var model = HomeCubit.get(context).model;
+            // cubit.getPostForViewProfile(model!.uId);
+            print("postsForUser.length   ${cubit.postsForUser.length}");
+            // print("postsForUser.length   ${cubit.postsForUser.first}");
             return Scaffold(
 
               appBar: AppBar(
                 title: Text('Profile'),
+                // leading: IconButton(
+                //   icon: Icon(Icons.arrow_back),
+                //   onPressed: () {
+                //   navigateTo(context,UsersScreen() );
+                //}
+                // ),
                 actions: [
                  IconButton(
                       icon: Icon(Icons.search),
                       onPressed: () {
+                        navigateTo(context, SearchScreen());
 
                       }
                   ),
@@ -109,7 +115,7 @@ class ViewProfileScreen extends StatelessWidget {
                                   onTap: () {},
                                   child: Column(
                                       children: [
-                                        Text('${postsForUser.length}',style: Theme.of(context).textTheme.subtitle2,),
+                                        Text('${cubit.postsForUser.length}',style: Theme.of(context).textTheme.subtitle2,),
                                         Text('posts',style: Theme.of(context).textTheme.caption,),
 
 
@@ -123,7 +129,7 @@ class ViewProfileScreen extends StatelessWidget {
                                   onTap: () {},
                                   child: Column(
                                       children: [
-                                        Text('${model!.followers!.length}',style: Theme.of(context).textTheme.subtitle2,),
+                                        Text('${cubit!.followers!.length}',style: Theme.of(context).textTheme.subtitle2,),
                                         Text('Followers',style: Theme.of(context).textTheme.caption,),
 
 
@@ -137,7 +143,7 @@ class ViewProfileScreen extends StatelessWidget {
                                   onTap: () {},
                                   child: Column(
                                       children: [
-                                        Text('${model!.following!.length}',style: Theme.of(context).textTheme.subtitle2,),
+                                        Text('${cubit!.following!.length}',style: Theme.of(context).textTheme.subtitle2,),
                                         Text('Followings',style: Theme.of(context).textTheme.caption,),
 
 
@@ -150,10 +156,29 @@ class ViewProfileScreen extends StatelessWidget {
 
                       ),
 
-                      // followAndUnfollowButton(isFollowing: cubit.isFollowing,id1: cubit.model!.uId ,
-                      //   id2: model!.uId,context:
-                      // context,),
-                      //
+                      Row(
+                        children: [
+                          SizedBox(width: 10,),
+                             followAndUnfollowButton(
+                              isFollowing: cubit.isFollowing!,
+                              id1: uId,
+                              id2: model!.uId,
+                               context:
+                            context,),
+                          SizedBox(width: 10,),
+
+                          Expanded(child: defaultButton(
+                            radius: 20,height: 35
+                            ,function: (){
+                            navigateTo(context, ChatDetailsScreen(model: model,));
+                          }, text: 'Message',)),
+                          SizedBox(width: 10,),
+
+                        ],
+                      ),
+                      SizedBox(height: 10,),
+
+
                       Divider(color: Colors.grey,height: 2,endIndent: 30,indent: 30,),
 
                       SizedBox(height: 10,),
@@ -167,13 +192,14 @@ class ViewProfileScreen extends StatelessWidget {
                             cubit.postsForUser[index],
                             context,
                             index,
+                            isSearch: true,
                             commentController: commentController[index],
                           );
 
 
 
                         },
-                        itemCount: postsForUser.length,
+                        itemCount: cubit.postsForUser.length,
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
                         separatorBuilder: (BuildContext context, int index) =>

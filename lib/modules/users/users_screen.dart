@@ -22,20 +22,24 @@ class UsersScreen extends StatelessWidget {
         var cubit = HomeCubit.get(context);
         // var model = HomeCubit.get(context).model;
 
+
         return ListView.separated(
             physics: BouncingScrollPhysics(),
             itemBuilder: (context, index) => buildUserItem(cubit.users[index],context),
             separatorBuilder: (context, index) => myDivider(),
+            findChildIndexCallback: (key) {
+
+            },
             itemCount: cubit.users.length);
       },
     );
   }
 
-  Widget buildUserItem( modeluser,context) {
-
-    return  InkWell(
+    Widget buildUserItem(UserModel? modeluser,context) => InkWell(
       onTap: () {
-        HomeCubit.get(context).getPostForUser(modeluser!.uId);
+        // HomeCubit.get(context).getPostsData();
+        // HomeCubit.get(context).getPostForViewProfile(modeluser.uId);
+
         navigateTo(context, ViewProfileScreen(model: modeluser));
       },
       child: Padding(
@@ -54,6 +58,6 @@ class UsersScreen extends StatelessWidget {
         ]),
       ),
     );
-  }
+
 
 }

@@ -95,7 +95,7 @@ Widget defaultFormField({
       ),
     );
 
-Widget buildMessage(MessageModel message, context, {Key? key}) => Align(
+Widget buildMessage(MessageModel? message, context ) => Align(
       alignment: AlignmentDirectional.centerStart,
       child: Container(
         decoration: BoxDecoration(
@@ -107,7 +107,7 @@ Widget buildMessage(MessageModel message, context, {Key? key}) => Align(
               bottomEnd: Radius.circular(10),
             )),
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: Text('${message.text}',
+        child: Text('${message!.text}',
             style: Theme.of(context).textTheme.caption!.copyWith(
                 height: 1.4,
                 fontSize: 14,
@@ -136,7 +136,7 @@ Widget buildMyMessage(MessageModel message, context, {Key? key}) => Align(
     );
 
 Widget buildPostItem(
-    model,
+  PostModel? model,
   context,
   int? index,
     {commentController,isSearch = false,}
@@ -374,7 +374,7 @@ Widget buildPostItem(
                       navigateTo(
                           context,
                           LikeScreen(
-                            postId: model!.postsId[index!],
+                            postId: HomeCubit.get(context).postsId[index!],
                           ));
 
 
@@ -390,7 +390,7 @@ Widget buildPostItem(
                           ),
                           SizedBox(width: 5),
                           Text(
-                            '${model.likes!.length} ' ,
+                            '${model.likes!.length} ' ?? '0',
                             style: Theme.of(context).textTheme.caption,
                           ),
                         ],
@@ -405,9 +405,9 @@ Widget buildPostItem(
                       navigateTo(
                           context,
                           CommentScreen(
-                            postId:model.postsId[index!],
+                            postId: HomeCubit.get(context).postsId[index!],
                           ));
-                      print('HomeCubit.get(context).postsId[index!] ${model.postsId[index!]}');
+                      print('HomeCubit.get(context).postsId[index!] ${HomeCubit.get(context).postsId[index!]}');
 
                     },
                     child: Padding(
@@ -628,49 +628,32 @@ Widget defaultButton({
 
 Widget followAndUnfollowButton({
   required bool isFollowing,
-  required String? id1,
   required String? id2,
+  required String? id1,
   context
-}) =>
+}) {
+  return isFollowing == false ? Expanded(
+    child: defaultButton(
+        function: () {
+          HomeCubit.get(context).followUser(uid: id1, followId: id2);
+          // HomeCubit.get(context).followers! +1 ;
 
-        HomeCubit.get(context).isFollowing==false ? Expanded(
-          child: defaultButton(
-              function: (){
-                HomeCubit.get(context).followUser( uid: id1,followId: id2);
-                // HomeCubit.get(context).followers! +1 ;
-
-                HomeCubit.get(context).changeFollowButton();
-              },  text: 'Follow',radius: 20,height: 40),
-        ):
-        Expanded(child: defaultTextButton(function:(){
-          HomeCubit.get(context).followUser( uid: id1,followId: id2);
           HomeCubit.get(context).changeFollowButton();
+          // HomeCubit.get(context).getFollowerForUser(id2);
+        }, text: 'Follow', radius: 20, height: 35),
+  ) :
+  Expanded(child: defaultTextButton(function: () {
+    HomeCubit.get(context).followUser(uid: id1, followId: id2);
 
-          // HomeCubit.get(context).followers! -1;
+    HomeCubit.get(context).changeFollowButton();
+    // HomeCubit.get(context).getFollowerForUser(id2);
 
-
-        },  text: 'Unfollow', )
-
-        // Expanded(
-        //   child: TextButton(
-        //     onPressed: function,
-        //     child: Text(
-        //       text,
-        //       style: TextStyle(
-        //         color: isFollowing ? Colors.black : Colors.white,
-        //       ),
-        //     ),
-        //     style: ButtonStyle(
-        //       backgroundColor: MaterialStateProperty.all(
-        //         isFollowing ? Colors.grey : background,
-        //       ),
-        //     ),
-        //   ),
-        // ),
-
-    );
+  }, text: 'Unfollow',));
+  // HomeCubit.get(context).getFollowerForUser(id2);
 
 
+
+}
 
 
 Widget defaultTextButton({

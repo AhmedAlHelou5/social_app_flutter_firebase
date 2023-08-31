@@ -31,6 +31,8 @@ class CommentScreen extends StatelessWidget {
       builder: (context, state) {
         var cubit = HomeCubit.get(context);
         var model = cubit.posts;
+        // var forUser = cubit.postsForUser;
+        // var model = cubit.posts;
 
         return Scaffold(
             appBar: AppBar(title: Text('Comments'), centerTitle: true),

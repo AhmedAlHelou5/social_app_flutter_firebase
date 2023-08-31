@@ -20,7 +20,9 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     HomeCubit.get(context).getPostsData();
-
+    HomeCubit.get(context)
+      ..getUserData()
+      ..getPostsData();
     return BlocProvider(
       create: (context) => SocialLoginCubit(),
       child: BlocConsumer<SocialLoginCubit, SocialLoginStates>(

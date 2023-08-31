@@ -69,7 +69,7 @@ class ChatDetailsScreen extends StatelessWidget {
                                           // buildMessage(cubit.messages[index]);
 
                                           if (cubit.messages[index].senderId == model!.uId)
-                                            return buildMessage(message,context,key:ValueKey(model!.uId));
+                                            return buildMessage(message,context);
 
                                             return buildMyMessage(message,context);
 
