@@ -16,21 +16,20 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // HomeCubit.get(context).getPostForViewProfile(uId);
     HomeCubit.get(context).getPostForSettings();
 
 
     return BlocConsumer<HomeCubit, HomeStates>(
   listener: (context, state) {
     // TODO: implement listener
-    if(state is HomeCreatePostSuccessState)
-      HomeCubit.get(context).getPostsData();
-    if(state is HomeLikePostSuccessState || state is HomeDisLikePostSuccessState)
-      HomeCubit.get(context).getPostsData();
+    if(state is HomeCreatePostSuccessState ||state is HomeLikePostSuccessState || state is HomeDisLikePostSuccessState || state is HomeCommentPostSuccessState)
+      HomeCubit.get(context).getPostForSettings();
 
   },
   builder: (context, state) {
     var cubit = HomeCubit.get(context);
-    var model = HomeCubit.get(context).model;
+    // var model = HomeCubit.get(context).model;
 
     var postsForUser = HomeCubit.get(context).postsForSettings;
 
@@ -180,7 +179,7 @@ class SettingsScreen extends StatelessWidget {
 
               commentController.add(new TextEditingController());
               return buildPostItem(
-                cubit.postsForSettings[index],
+                postsForUser[index],
                 context,
                 index,
                 commentController: commentController[index]??0,

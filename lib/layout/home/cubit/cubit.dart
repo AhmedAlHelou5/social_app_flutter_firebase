@@ -891,29 +891,26 @@ class HomeCubit extends Cubit<HomeStates> {
         FirebaseFirestore.instance.collection('posts').doc(postId).update({
           'likes': FieldValue.arrayUnion([likeModel.toMap()])
         });
-        emit(HomeDisLikePostSuccessState());
-        // getPostsData();
-        // getPostForSettings();
-        // getPostForViewProfile(model.uId);
+        emit(HomeLikePostSuccessState());
+        // buttonClicked=!buttonClicked;
+
+
 
       }
-
-
         FirebaseFirestore.instance.collection('posts').doc(postId).update({
           'likes': FieldValue.arrayRemove([likeModel.toMap()])
         });
-      // getPostsData();
-
+        emit(HomeDisLikePostSuccessState());
+        // buttonClicked=!buttonClicked;
 
 
       buttonClicked=!buttonClicked;
-      // getPostsData();
 
     }).catchError((e) {
       print(e.toString());
       emit(HomeLikePostErrorState(e.toString()));
     });
-    getPostsData();
+    // getPostsData();
 
   }
 

@@ -498,8 +498,8 @@ Widget buildPostItem(
                 onTap: () {
                   // var postId = model.postId;
                   var cubit = HomeCubit.get(context);
-                  // cubit.buttonClicked =   !cubit.buttonClicked;
                   print( cubit.buttonClicked);
+                  cubit.buttonClicked = !cubit.buttonClicked;
 
                      cubit.likePostForUser(
                         id: uId,
@@ -508,12 +508,7 @@ Widget buildPostItem(
                         name:   HomeCubit.get(context).model!.name!
 
                     );
-                    // cubit.buttonClicked = !cubit.buttonClicked;
-
-
-
-
-
+                    cubit.buttonClicked = !cubit.buttonClicked;
 
                 },
 
