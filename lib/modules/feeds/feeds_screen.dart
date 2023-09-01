@@ -26,7 +26,7 @@ class FeedsScreen extends StatelessWidget {
               // TODO: implement listener
               if(state is HomeCreatePostSuccessState)
                 HomeCubit.get(context).getPostsData();
-              if(state is HomeLikePostSuccessState || state is HomeDisLikePostSuccessState)
+              if(state is HomeLikePostSuccessState || state is HomeDisLikePostSuccessState || state is HomeCommentPostSuccessState)
                 HomeCubit.get(context).getPostsData();
 
 

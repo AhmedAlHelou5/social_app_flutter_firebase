@@ -374,7 +374,7 @@ Widget buildPostItem(
                       navigateTo(
                           context,
                           LikeScreen(
-                            postId: HomeCubit.get(context).postsId[index!],
+                            postId: model.postId,
                           ));
 
 
@@ -405,9 +405,9 @@ Widget buildPostItem(
                       navigateTo(
                           context,
                           CommentScreen(
-                            postId: HomeCubit.get(context).postsId[index!],
+                            postId: model!.postId,
                           ));
-                      print('HomeCubit.get(context).postsId[index!] ${HomeCubit.get(context).postsId[index!]}');
+                      print('HomeCubit.get(context).postsId[index!] ${model.postId}');
 
                     },
                     child: Padding(
@@ -487,39 +487,30 @@ Widget buildPostItem(
               if (commentController.text.length > 0)
                 sendToComment(
                     context,
+                    model.postId,
                     index,
                     commentController,
-                    model.name,
-                   model.image,
+                    HomeCubit.get(context).model!.name,
+                    HomeCubit.get(context).model!.image,
                     uId),
 
               InkWell(
                 onTap: () {
-                  var postId = HomeCubit.get(context).postsId;
+                  // var postId = model.postId;
                   var cubit = HomeCubit.get(context);
-                  cubit.buttonClicked =   !cubit.buttonClicked;
+                  // cubit.buttonClicked =   !cubit.buttonClicked;
                   print( cubit.buttonClicked);
 
-                  if ( cubit.buttonClicked){
-                    cubit.likePost(
+                     cubit.likePostForUser(
                         id: uId,
-                      postId: postId[postId.indexOf(postId[index!])],
-                        image: model!.image!,
-                        name: model!.name!
+                      postId: model.postId,
+                        image:   HomeCubit.get(context).model!.image!,
+                        name:   HomeCubit.get(context).model!.name!
 
                     );
-                    cubit.buttonClicked = !cubit.buttonClicked;
+                    // cubit.buttonClicked = !cubit.buttonClicked;
 
-                  }else{
-                    cubit.DislikePost(
-                        id:uId,
-                      postId: postId[postId.indexOf(postId[index!])],
-                        image: model!.image!,
-                        name: model!.name!
-                    );
-                    cubit.buttonClicked = !cubit.buttonClicked;
 
-                  }
 
 
 
@@ -549,8 +540,7 @@ Widget buildPostItem(
   );
 }
 
-Widget sendToComment(context, index, controller, name, image, id) {
-  var postId = HomeCubit.get(context).postsId;
+Widget sendToComment(context, postId,index, controller, name, image, id) {
   return Expanded(
     flex: 1,
     child: IconButton(
@@ -558,8 +548,7 @@ Widget sendToComment(context, index, controller, name, image, id) {
         onPressed: () {
           print('Send');
           HomeCubit.get(context).commentPost(
-              postId: HomeCubit.get(context)
-                  .postsId[postId.indexOf(postId[index!])],
+              postId: postId,
               dateTime: DateTime.now().toString(),
               text: controller.text,
               image: image,
