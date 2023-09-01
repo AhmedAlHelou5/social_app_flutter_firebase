@@ -798,50 +798,84 @@ class HomeCubit extends Cubit<HomeStates> {
   }
 
   bool buttonClicked = false;
+  // bool isLike = false;
 
-  void likePost({
-    required String? postId,
-    required String? image,
-    required String? id,
-    required String? name,
-  }) {
+  // void likePost({
+  //   required String? postId,
+  //   required String? image,
+  //   required String? id,
+  //   required String? name,
+  // }) {
+  //
+  //   LikeModel likeModel = LikeModel(
+  //     name: name,
+  //     uId: id,
+  //     image: image,
+  //     postId: postId,
+  //   );
+  //
+  //     FirebaseFirestore.instance.collection('posts').doc(postId).update({
+  //       'likes': FieldValue.arrayUnion([likeModel.toMap()])
+  //     }).then((value) {
+  //
+  //       buttonClicked=!buttonClicked;
+  //       getPostsData();
+  //       getPostForSettings();
+  //       // getPostForViewProfile(model.uId);
+  //
+  //       emit(HomeLikePostSuccessState());
+  //
+  //     }).catchError((error) {
+  //       print(error.toString());
+  //       emit(HomeLikePostErrorState(error.toString()));
+  //     });
+  //   getPostForSettings();
+  //   // getPostForViewProfile(model);
+  //
+  //   getPostsData();
+  //
+  // }
 
-    LikeModel likeModel = LikeModel(
-      name: name,
-      uId: id,
-      image: image,
-      postId: postId,
-    );
 
-      FirebaseFirestore.instance.collection('posts').doc(postId).update({
-        'likes': FieldValue.arrayUnion([likeModel.toMap()])
-      }).then((value) {
+  // void DislikePost({
+  //   required String? postId,
+  //   required String? image,
+  //   required String? id,
+  //   required String? name,
+  // }) {
+  //   LikeModel likeModel = LikeModel(
+  //     name: name,
+  //     uId: id,
+  //     image: image,
+  //     postId: postId,
+  //   );
+  //
+  //   FirebaseFirestore.instance.collection('posts').doc(postId).update({
+  //     'likes': FieldValue.arrayRemove([likeModel.toMap()]) // if(likeModel==0)
+  //   }).then((value) {
+  //
+  //     buttonClicked=!buttonClicked;
+  //     getPostsData();
+  //     emit(HomeDisLikePostSuccessState());
+  //
+  //     // getPostsData();
+  //   }).catchError((error) {
+  //     print(error.toString());
+  //     emit(HomeDisLikePostErrorState(error.toString()));
+  //   });
+  //   getPostForSettings();
+  //   getPostsData();
+  // }
+  //
 
-        buttonClicked=!buttonClicked;
-        getPostsData();
-        getPostForSettings();
-        // getPostForViewProfile(model.uId);
-
-        emit(HomeLikePostSuccessState());
-
-      }).catchError((error) {
-        print(error.toString());
-        emit(HomeLikePostErrorState(error.toString()));
-      });
-    getPostForSettings();
-    // getPostForViewProfile(model);
-
-    getPostsData();
-
+  void changeLikeButton() {
+    buttonClicked = !buttonClicked;
+    // isFollowing =  value.data()!['followers']
+    //     .contains(uId) ? true : false;
+    emit(HomeCheckLikePostState());
   }
 
-
-  void DislikePost({
-    required String? postId,
-    required String? image,
-    required String? id,
-    required String? name,
-  }) {
+  void likePostForUser({postId,context,image, id, name}) {
     LikeModel likeModel = LikeModel(
       name: name,
       uId: id,
@@ -849,42 +883,15 @@ class HomeCubit extends Cubit<HomeStates> {
       postId: postId,
     );
 
-    FirebaseFirestore.instance.collection('posts').doc(postId).update({
-      'likes': FieldValue.arrayRemove([likeModel.toMap()]) // if(likeModel==0)
-    }).then((value) {
-
-      buttonClicked=!buttonClicked;
-      getPostsData();
-      emit(HomeDisLikePostSuccessState());
-
-      // getPostsData();
-    }).catchError((error) {
-      print(error.toString());
-      emit(HomeDisLikePostErrorState(error.toString()));
-    });
-    getPostForSettings();
-    getPostsData();
-  }
-
-
-
-  void likePostForUser({postId, image, id, name}) {
-    LikeModel likeModel = LikeModel(
-      name: name,
-      uId: id,
-      image: image,
-      postId: postId,
-    );
-
-
+    //
 
     FirebaseFirestore.instance.collection('posts').doc(postId).get().then((value) {
       List likes = [];
+
+
       value.data()!['likes'].forEach(( element) {
         likes.add(element!  );
         print(' /////////////////likes ::: $likes' );
-        emit(HomeLikePostSuccessState());
-
 
       } );
       if (!likes.contains(id)) {
@@ -892,40 +899,24 @@ class HomeCubit extends Cubit<HomeStates> {
           'likes': FieldValue.arrayUnion([likeModel.toMap()])
         });
         emit(HomeLikePostSuccessState());
-        // buttonClicked=!buttonClicked;
-
-
 
       }
         FirebaseFirestore.instance.collection('posts').doc(postId).update({
           'likes': FieldValue.arrayRemove([likeModel.toMap()])
         });
         emit(HomeDisLikePostSuccessState());
-        // buttonClicked=!buttonClicked;
 
+      buttonClicked= value.data()!['likes'].contains(uId) ? true : false;
 
-      buttonClicked=!buttonClicked;
 
     }).catchError((e) {
       print(e.toString());
       emit(HomeLikePostErrorState(e.toString()));
     });
-    // getPostsData();
+    // changeLikeButton();
+    // buttonClicked=!buttonClicked;
 
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   void followUser({String? uid, String? followId})  {
       FirebaseFirestore.instance.collection('users').doc(uid).get().then((value) {

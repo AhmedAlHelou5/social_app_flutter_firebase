@@ -496,19 +496,28 @@ Widget buildPostItem(
 
               InkWell(
                 onTap: () {
-                  // var postId = model.postId;
                   var cubit = HomeCubit.get(context);
-                  print( cubit.buttonClicked);
-                  cubit.buttonClicked = !cubit.buttonClicked;
+                  // HomeCubit.get(context).followers! +1 ;
+                  HomeCubit.get(context).changeLikeButton();
 
-                     cubit.likePostForUser(
-                        id: uId,
-                      postId: model.postId,
+                  print( 'cubit.buttonClicked ${cubit.buttonClicked}');
+                      cubit.buttonClicked ?  cubit.likePostForUser(
+                        id:  HomeCubit.get(context).model!.uId!,
+                       postId: model.postId,
                         image:   HomeCubit.get(context).model!.image!,
                         name:   HomeCubit.get(context).model!.name!
 
-                    );
-                    cubit.buttonClicked = !cubit.buttonClicked;
+                    ):cubit.likePostForUser(
+                          id:  HomeCubit.get(context).model!.uId!,
+                          postId: model.postId,
+                          image:   HomeCubit.get(context).model!.image!,
+                          name:   HomeCubit.get(context).model!.name!
+
+                      );
+
+                  // HomeCubit.get(context).changeLikeButton();
+
+                  // cubit.buttonClicked=!cubit.buttonClicked;
 
                 },
 
