@@ -10,6 +10,7 @@ import 'package:social_app_flutter_firebase/models/post/comment_model.dart';
 import 'package:social_app_flutter_firebase/models/user/user_model.dart';
 import 'package:social_app_flutter_firebase/modules/new_post/new_post_screen.dart';
 import 'package:social_app_flutter_firebase/modules/settings/settings_screen.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../models/followers/follow_model.dart';
 import '../../../models/message/message_model.dart';
@@ -368,9 +369,12 @@ class HomeCubit extends Cubit<HomeStates> {
     required String? dateTime,
     String? postImage,
   }) {
+    String? postId = Uuid().v1();
+
     PostModel? postModel = PostModel(
       text: text!,
       dateTime: dateTime!,
+      postId: postId,
       postImage: postImage ?? '',
       name: model!.name!,
       uId: model!.uId!,
@@ -379,16 +383,7 @@ class HomeCubit extends Cubit<HomeStates> {
       likes: [],
     );
 
-    FirebaseFirestore.instance.collection('posts').add({
-      'name': postModel.name,
-      'image': postModel.image,
-      'uId': postModel.uId,
-      'dateTime': postModel.dateTime,
-      'text': postModel.text,
-      'postImage': postModel.postImage,
-      'comments': [],
-      'likes': []
-    }).then((value) {
+    FirebaseFirestore.instance.collection('posts').doc(postId).set(postModel.toMap()).then((value) {
       getPostsData();
 
       emit(HomeCreatePostSuccessState());
@@ -471,13 +466,14 @@ class HomeCubit extends Cubit<HomeStates> {
     required String? name,
      String? id2,
   }) {
+    String? commentId = Uuid().v1();
     CommentModel commentModel = CommentModel(
       text: text!,
       dateTime: dateTime!,
       name: name,
       uId: uId,
       image: image,
-      postId: postId,
+      commentId: commentId,
     );
 
     FirebaseFirestore.instance.collection('posts').doc(postId).update({
@@ -591,7 +587,7 @@ class HomeCubit extends Cubit<HomeStates> {
 
       value.docs.forEach(
         (result) {
-          postsId.add(result.id);
+          // postsId.add(result.id);
           posts.add(
             PostModel.fromJson(
               result.data(),
@@ -665,11 +661,11 @@ class HomeCubit extends Cubit<HomeStates> {
         .then((value) {
       posts = [];
       postsForUser = [];
-      postsId = [];
+      // postsId = [];
 
       value.docs.forEach(
             (result) {
-          postsId.add(result.id);
+          // postsId.add(result.id);
           posts.add(
             PostModel.fromJson(
               result.data(),
@@ -680,8 +676,7 @@ class HomeCubit extends Cubit<HomeStates> {
 
           posts.forEach((element) {
             if (element!.uId == model!.uId) {
-              postsForUser = [];
-
+              // postsForUser = [];
               postsForUser.add(element);
             }
           });
@@ -824,6 +819,8 @@ class HomeCubit extends Cubit<HomeStates> {
 
         buttonClicked=!buttonClicked;
         getPostsData();
+        getPostForSettings();
+        // getPostForViewProfile(model.uId);
 
         emit(HomeLikePostSuccessState());
 
@@ -832,6 +829,8 @@ class HomeCubit extends Cubit<HomeStates> {
         emit(HomeLikePostErrorState(error.toString()));
       });
     getPostForSettings();
+    // getPostForViewProfile(model);
+
     getPostsData();
 
   }
@@ -866,6 +865,68 @@ class HomeCubit extends Cubit<HomeStates> {
     getPostForSettings();
     getPostsData();
   }
+
+
+
+  void likePostForUser({postId, image, id, name}) {
+    LikeModel likeModel = LikeModel(
+      name: name,
+      uId: id,
+      image: image,
+      postId: postId,
+    );
+
+
+
+    FirebaseFirestore.instance.collection('posts').doc(postId).get().then((value) {
+      List likes = [];
+      value.data()!['likes'].forEach(( element) {
+        likes.add(element!  );
+        print(' /////////////////likes ::: $likes' );
+        emit(HomeLikePostSuccessState());
+
+
+      } );
+      if (!likes.contains(id)) {
+        FirebaseFirestore.instance.collection('posts').doc(postId).update({
+          'likes': FieldValue.arrayUnion([likeModel.toMap()])
+        });
+        emit(HomeDisLikePostSuccessState());
+        // getPostsData();
+        // getPostForSettings();
+        // getPostForViewProfile(model.uId);
+
+      }
+
+
+        FirebaseFirestore.instance.collection('posts').doc(postId).update({
+          'likes': FieldValue.arrayRemove([likeModel.toMap()])
+        });
+      // getPostsData();
+
+
+
+      buttonClicked=!buttonClicked;
+      // getPostsData();
+
+    }).catchError((e) {
+      print(e.toString());
+      emit(HomeLikePostErrorState(e.toString()));
+    });
+    getPostsData();
+
+  }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

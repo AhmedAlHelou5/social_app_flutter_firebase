@@ -12,7 +12,7 @@ import '../../shared/components/components.dart';
 import '../../shared/styles/colors/colors.dart';
 
 class CommentScreen extends StatelessWidget {
-  dynamic? postId;
+  String? postId;
 
   CommentScreen({required this.postId});
 
@@ -30,7 +30,7 @@ class CommentScreen extends StatelessWidget {
       },
       builder: (context, state) {
         var cubit = HomeCubit.get(context);
-        var model = cubit.posts;
+        // var model = cubit.posts;
         // var forUser = cubit.postsForUser;
         // var model = cubit.posts;
 
@@ -39,7 +39,7 @@ class CommentScreen extends StatelessWidget {
             body: SingleChildScrollView(
               physics: BouncingScrollPhysics(),
               child: ConditionalBuilder(
-                condition:cubit.posts[cubit.postsId.indexOf(postId)]!.comments!.length > 0,
+                condition: cubit.posts[cubit.postsId.indexOf(postId)]!.comments!.length > 0,
               builder: (context) =>  ListView.separated(
 
                 itemBuilder: (context, index) {

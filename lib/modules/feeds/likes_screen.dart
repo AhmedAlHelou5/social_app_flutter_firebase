@@ -30,7 +30,7 @@ class LikeScreen extends StatelessWidget {
       },
       builder: (context, state) {
         var cubit = HomeCubit.get(context);
-        var model = cubit.posts;
+        // var model = cubit.posts;
 
         return Scaffold(
           appBar: AppBar(title: Text('Likes'), centerTitle: true),
@@ -38,18 +38,18 @@ class LikeScreen extends StatelessWidget {
             physics: BouncingScrollPhysics(),
             child: ConditionalBuilder(
 
-              condition: cubit.posts[cubit.postsId.indexOf(postId)]!.likes!.length > 0,
+              condition:cubit.posts[cubit.postsId.indexOf(postId)]!.likes!.length > 0,
               builder:(contex) => ListView.separated(
                 itemBuilder: (context, index) {
-                  print( cubit.posts[cubit.postsId.indexOf(postId)]!.likes![index]);
+                  // print( postId.likes![index]);
                   return buildLikeItem(
-                      cubit.posts[cubit.postsId.indexOf(postId)]!.likes![index],
+                    cubit.posts[cubit.postsId.indexOf(postId)]!.likes![index],
                       context,
                       index,
                       );
                 },
                 itemCount:
-                    cubit.posts[cubit.postsId.indexOf(postId)]!.likes!.length,
+                cubit.posts[cubit.postsId.indexOf(postId)]!.likes!.length,
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 separatorBuilder: (BuildContext context, int index) =>
@@ -71,6 +71,7 @@ class LikeScreen extends StatelessWidget {
     int? index,
   ) {
     // bool buttonClicked = false;
+    var cubit = HomeCubit.get(context);
 
     return Card(
       clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -86,7 +87,7 @@ class LikeScreen extends StatelessWidget {
             Row(children: [
               CircleAvatar(
                 radius: 25,
-                backgroundImage: NetworkImage('${model!.image}'),
+                backgroundImage: NetworkImage('${cubit.posts[cubit.postsId.indexOf(postId)]!.likes![index!].image}'),
               ),
               SizedBox(width: 15),
               Expanded(
@@ -96,7 +97,7 @@ class LikeScreen extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          '${model.name}',
+                          '${cubit.posts[cubit.postsId.indexOf(postId)]!.likes![index].name}',
                           style: TextStyle(height: 1.4),
                         ),
                         SizedBox(width: 5),

@@ -1,6 +1,6 @@
 class CommentModel {
   String? uId;
-  String? postId;
+  String? commentId;
   String? name;
   String? dateTime;
   String? image;
@@ -8,7 +8,7 @@ class CommentModel {
 
   CommentModel({
     this.uId,
-    this.postId,
+    this.commentId,
     this.name,
     this.image,
     this.dateTime,
@@ -18,7 +18,7 @@ class CommentModel {
 
   CommentModel.fromJson(Map<String, dynamic> json) {
     uId = json['uId'];
-    postId = json['postId'];
+    commentId = json['commentId'];
     name = json['name'];
     text = json['text'];
     image = json['image'];
@@ -29,7 +29,7 @@ class CommentModel {
   Map<String, dynamic> toMap() {
     return {
       'uId': uId,
-      'postId': postId,
+      'commentId': commentId,
       'name': name,
       'text': text,
       'image': image,

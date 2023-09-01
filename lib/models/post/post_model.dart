@@ -4,6 +4,7 @@ import 'comment_model.dart';
 
 class PostModel {
   String? uId;
+  String? postId;
   String? name;
   String? dateTime;
   String? image;
@@ -14,6 +15,7 @@ class PostModel {
 
   PostModel({
          this.uId,
+         this.postId,
          this.name,
         this.image,
         this.dateTime,
@@ -27,13 +29,14 @@ class PostModel {
     var commentList = json['comments'] ;
     var likeList = json['likes'];
     uId = json['uId'];
+    postId = json['postId'];
     name = json['name'];
     text = json['text'];
     postImage = json['postImage'];
     image = json['image'];
     dateTime = json['dateTime'];
     comments =commentList.map((i) => CommentModel.fromJson(i)).toList();
-    likes =  likes =likeList.map((i) => LikeModel.fromJson(i)).toList();
+      likes =likeList.map((i) => LikeModel.fromJson(i)).toList();
     // likes =likeList.map((i) => LikeModel.fromJson(i)).toList();
 
   }
@@ -41,6 +44,7 @@ class PostModel {
   Map<String, dynamic> toMap() {
     return {
       'uId': uId,
+      'postId': postId,
       'name': name,
       'text': text,
       'postImage': postImage,

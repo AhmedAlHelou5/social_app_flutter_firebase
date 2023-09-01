@@ -27,10 +27,14 @@ class ViewProfileScreen extends StatelessWidget {
         return BlocConsumer<HomeCubit, HomeStates>(
 
           listener: (context, state) {
-            // TODO: implement listener
+            // // TODO: implement listener
             // if(state is HomeChangeButtonFollowState){
             //   HomeCubit.get(context).getFollowerForUser(model!.uId);
             // }
+
+            if(state is HomeCreatePostSuccessState || state is HomeLikePostSuccessState || state is HomeDisLikePostSuccessState || state is HomeChangeButtonFollowState || state is HomeCommentPostSuccessState)
+              HomeCubit.get(context).getPostForViewProfile(model);
+
 
           },
           builder: (context, state) {
@@ -192,7 +196,7 @@ class ViewProfileScreen extends StatelessWidget {
                             cubit.postsForUser[index],
                             context,
                             index,
-                            isSearch: true,
+                            isSearch: false,
                             commentController: commentController[index],
                           );
 
