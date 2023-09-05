@@ -1,3 +1,5 @@
+import 'package:social_app_flutter_firebase/models/post/post_model.dart';
+
 class UserModel {
   String? uId;
   String? name;
@@ -9,6 +11,7 @@ class UserModel {
   bool? isEmailVerified;
    List<dynamic>? followers;
    List<dynamic>? following;
+   List<dynamic>? savePost;
 
   UserModel(
       { this.uId,
@@ -20,12 +23,13 @@ class UserModel {
       this.bio,
       this.isEmailVerified,
       this.followers,
-      this.following
+      this.following,
+      this.savePost
       });
 
   UserModel.fromJson(Map<String, dynamic> json) {
     // var followersList = json['followers'];
-    // var followingList = json['following'];
+    var savePostList = json['savePost'];
     uId = json['uId'];
     name = json['name'];
     email = json['email'];
@@ -36,6 +40,9 @@ class UserModel {
     isEmailVerified = json['isEmailVerified'];
     followers = json['followers'];
     following = json['following'];
+    // savePost = json['savePost'];
+    savePost =savePostList.map((i) => PostModel.fromJson(i)).toList();
+
     // following = json['following'];
     // likes =  likes =likeList.map((i) => LikeModel.fromJson(i)).toList();
 
@@ -53,6 +60,7 @@ class UserModel {
       'isEmailVerified': isEmailVerified,
       'followers': followers,
       'following': following,
+      'savePost': savePost,
     };
   }
 }

@@ -1,11 +1,11 @@
 import 'package:social_app_flutter_firebase/models/user/user_model.dart';
 
-class FollowerModel {
+class FollowingModel {
   String? uId;
   String? name;
   String? image;
 
-  FollowerModel({
+  FollowingModel({
     this.uId,
     this.name,
     this.image,
@@ -14,7 +14,7 @@ class FollowerModel {
 
   });
 
-  FollowerModel.fromJson(Map<String, dynamic> json) {
+  FollowingModel.fromJson(Map<String, dynamic> json) {
     uId = json['uId'] ;
     name = json['name'] ;
     image = json['image'] ;

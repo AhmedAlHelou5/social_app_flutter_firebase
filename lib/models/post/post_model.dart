@@ -10,8 +10,8 @@ class PostModel {
   String? image;
   String? text;
   String? postImage;
-  List<dynamic>? comments;
-  List<dynamic>? likes;
+  dynamic? comments;
+  dynamic? likes;
 
   PostModel({
          this.uId,
@@ -36,7 +36,7 @@ class PostModel {
     image = json['image'];
     dateTime = json['dateTime'];
     comments =commentList.map((i) => CommentModel.fromJson(i)).toList();
-      likes =likeList.map((i) => LikeModel.fromJson(i)).toList();
+    likes =likeList.map((i) => LikeModel.fromJson(i)).toList();
     // likes =likeList.map((i) => LikeModel.fromJson(i)).toList();
 
   }

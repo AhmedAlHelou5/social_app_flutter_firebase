@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:social_app_flutter_firebase/layout/home/cubit/cubit.dart';
 import 'package:social_app_flutter_firebase/res/assets_res.dart';
+import 'package:social_app_flutter_firebase/shared/components/components.dart';
 import 'package:social_app_flutter_firebase/shared/components/constants.dart';
 import 'package:social_app_flutter_firebase/shared/network/local/cache_helper.dart';
 
@@ -30,8 +31,7 @@ class SplashScreen extends StatelessWidget {
 
     Timer(
         Duration(seconds: 2),
-        () => Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => startWidget!)));
+        () => navigateAndFinish(context, startWidget!));
     HomeCubit.get(context)
       ..getUserData()
       ..getPostsData();

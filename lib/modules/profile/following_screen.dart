@@ -9,7 +9,9 @@ import '../../models/user/user_model.dart';
 import '../../shared/components/components.dart';
 
 class FollowingScreen extends StatelessWidget {
-  const FollowingScreen({Key? key}) : super(key: key);
+  String? id2;
+
+   FollowingScreen({this.id2});
 
   @override
   Widget build(BuildContext context) {

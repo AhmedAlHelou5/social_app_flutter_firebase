@@ -3,19 +3,30 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_app_flutter_firebase/layout/home/cubit/cubit.dart';
 import 'package:social_app_flutter_firebase/layout/home/cubit/cubit.dart';
 import 'package:social_app_flutter_firebase/layout/home/cubit/states.dart';
+import 'package:social_app_flutter_firebase/models/post/post_model.dart';
 
 import '../../shared/components/components.dart';
 import '../../shared/styles/colors/colors.dart';
 
-class NewPostScreen extends StatelessWidget {
-   NewPostScreen({Key? key}) : super(key: key);
-  var postController = TextEditingController();
+class EditPostScreen extends StatelessWidget {
 
+  PostModel? model;
 
+  EditPostScreen(this.model);
 
 
   @override
   Widget build(BuildContext context) {
+
+    // var cubit = HomeCubit.get(context);
+    var postController = TextEditingController();
+    postController.text = model!.text!;
+
+
+
+
+
+
     return BlocConsumer<HomeCubit, HomeStates>(
       listener: (context, state) {
         // TODO: implement listener
@@ -29,16 +40,19 @@ class NewPostScreen extends StatelessWidget {
       },
       builder: (context, state) {
         var cubit = HomeCubit.get(context);
-        var now = DateTime.now().toString();
+        // var now = DateTime.now().toString();
         return Scaffold(
           appBar: defaultAppBar(
-              context: context, title: 'Create Post', actions: [
+              context: context, title: 'Update Post', actions: [
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: defaultTextButton(
                   function: () {
 
-                    cubit.checkImageInPost(text:postController.text ,dateTime:now ,context: context);
+                    // cubit.checkImageInPostEdit(text:postController.text,
+                    //     postId: model!.postId,
+                    //     postImage: model!.postImage,
+                    //     context: context);
 
 
                     // Navigator.of(context).pop();
@@ -56,7 +70,7 @@ class NewPostScreen extends StatelessWidget {
             child: Column(
                 children: [
                   if (state is HomeCreatePostLoadingState)
-                  LinearProgressIndicator(),
+                    LinearProgressIndicator(),
                   if (state is HomeCreatePostLoadingState)
                     SizedBox(height: 10),
                   Row(
@@ -64,12 +78,12 @@ class NewPostScreen extends StatelessWidget {
                         CircleAvatar(
                           radius: 25,
                           backgroundImage: NetworkImage(
-                            '${cubit.model!.image}',),
+                            '${model!.image}',),
                         ),
                         SizedBox(width: 15),
                         Expanded(
                           child: Text(
-                            '${cubit.model!.name}',
+                            '${model!.name}',
                             style: TextStyle(height: 1.4, fontSize: 17),
                           ),
                         ),
@@ -101,39 +115,40 @@ class NewPostScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 20),
-                  if (cubit.imagePostFile != null)
-                  Stack(
-                      alignment: AlignmentDirectional.topEnd,
-                      children: [
-                        Container(
-                          width: double.infinity,
-                          height: 140,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4),
-                              image: DecorationImage(
-                                image: FileImage(cubit.imagePostFile!)
-                                as ImageProvider,
-                                fit: BoxFit.cover,
-                              )),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(
-                            right: 10,
-                            top: 10,
-                          ),
-                          child: CircleAvatar(
-                            radius: 20,
-                            child: IconButton(
-                                onPressed: () {
-                                  cubit.removePostImage();
-                                },
-                                icon: Icon(
-                                  Icons.close,
-                                  size: 16,
+                  if (model!.postImage != null)
+                    Stack(
+                        alignment: AlignmentDirectional.topEnd,
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            height: 140,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                                image: DecorationImage(
+                                  image: NetworkImage(
+                                    '${model!.postImage}',
+                                  ),
+                                  fit: BoxFit.cover,
                                 )),
                           ),
-                        )
-                      ]),
+                          Container(
+                            margin: EdgeInsets.only(
+                              right: 10,
+                              top: 10,
+                            ),
+                            child: CircleAvatar(
+                              radius: 20,
+                              child: IconButton(
+                                  onPressed: () {
+                                    cubit.removePostImage();
+                                  },
+                                  icon: Icon(
+                                    Icons.close,
+                                    size: 16,
+                                  )),
+                            ),
+                          )
+                        ]),
                   SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

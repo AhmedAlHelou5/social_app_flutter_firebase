@@ -1,26 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:focused_menu/focused_menu.dart';
+import 'package:focused_menu/modals.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
 import 'package:social_app_flutter_firebase/models/message/message_model.dart';
 import 'package:social_app_flutter_firebase/models/post/comment_model.dart';
 import 'package:social_app_flutter_firebase/models/user/user_model.dart';
 import 'package:social_app_flutter_firebase/modules/feeds/comment_screen.dart';
+import 'package:social_app_flutter_firebase/modules/new_post/edit_post.dart';
 
 import '../../layout/home/cubit/cubit.dart';
 import '../../models/post/post_model.dart';
 import '../../modules/feeds/likes_screen.dart';
+import '../../modules/new_post/new_post_screen.dart';
 import '../styles/colors/colors.dart';
 import 'constants.dart';
 
-Widget buildDivider() => Container(
+Widget buildDivider() =>
+    Container(
       height: 24,
       child: VerticalDivider(
         color: Colors.grey,
       ),
     );
 
-Widget myDivider() => Padding(
+Widget myDivider() =>
+    Padding(
       padding: const EdgeInsetsDirectional.only(
         start: 20.0,
       ),
@@ -31,19 +37,21 @@ Widget myDivider() => Padding(
       ),
     );
 
-void navigateTo(context, widget) => Navigator.push(
+void navigateTo(context, widget) =>
+    Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => widget,
       ),
     );
 
-void navigateAndFinish(context, Widget widget) => Navigator.pushAndRemoveUntil(
-    context,
-    MaterialPageRoute(
-      builder: (context) => widget,
-    ),
-    (route) => false);
+void navigateAndFinish(context, Widget widget) =>
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => widget,
+        ),
+            (route) => false);
 
 Widget defaultFormField({
   required TextEditingController? controller,
@@ -83,9 +91,9 @@ Widget defaultFormField({
         hintText: hint,
         suffixIcon: suffix != null
             ? IconButton(
-                icon: Icon(suffix),
-                onPressed: suffixPresed,
-              )
+          icon: Icon(suffix),
+          onPressed: suffixPresed,
+        )
             : null,
         prefixIcon: Icon(
           prefix,
@@ -95,7 +103,8 @@ Widget defaultFormField({
       ),
     );
 
-Widget buildMessage(MessageModel? message, context ) => Align(
+Widget buildMessage(MessageModel? message, context) =>
+    Align(
       alignment: AlignmentDirectional.centerStart,
       child: Container(
         decoration: BoxDecoration(
@@ -108,18 +117,23 @@ Widget buildMessage(MessageModel? message, context ) => Align(
             )),
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Text('${message!.text}',
-            style: Theme.of(context).textTheme.caption!.copyWith(
+            style: Theme
+                .of(context)
+                .textTheme
+                .caption!
+                .copyWith(
                 height: 1.4,
                 fontSize: 14,
                 color: Colors.black.withOpacity(0.8))),
       ),
     );
 
-Widget buildMyMessage(MessageModel message, context, {Key? key}) => Align(
+Widget buildMyMessage(MessageModel message, context, {Key? key}) =>
+    Align(
       alignment: AlignmentDirectional.centerEnd,
       child: Container(
         decoration: BoxDecoration(
-            // color: Colors.grey[300],
+          // color: Colors.grey[300],
             color: defaultColor.withOpacity(.2),
             borderRadius: const BorderRadiusDirectional.only(
               topEnd: Radius.circular(10),
@@ -128,19 +142,21 @@ Widget buildMyMessage(MessageModel message, context, {Key? key}) => Align(
             )),
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Text('${message.text}',
-            style: Theme.of(context).textTheme.caption!.copyWith(
+            style: Theme
+                .of(context)
+                .textTheme
+                .caption!
+                .copyWith(
                 height: 1.4,
                 fontSize: 14,
                 color: Colors.black.withOpacity(0.8))),
       ),
     );
 
-Widget buildPostItem(
-  PostModel? model,
-  context,
-  int? index,
-    {commentController,isSearch = false,}
-) {
+Widget buildPostItem( PostModel? model,
+    context,
+    int? index,
+    {commentController, isSearch = false, isHome = false}) {
   // bool buttonClicked = false;
 
   return Card(
@@ -179,8 +195,11 @@ Widget buildPostItem(
                     ],
                   ),
                   Text(
-                    ' ${DateFormat.jmv().format(DateTime.parse(model.dateTime!)) as String}  ${DateFormat.yMMMMd().format(DateTime.parse(model.dateTime!)) as String}',
-                    style: Theme.of(context)
+                    ' ${DateFormat.jmv().format(DateTime.parse(
+                        model.dateTime!)) as String}  ${DateFormat.yMMMMd()
+                        .format(DateTime.parse(model.dateTime!)) as String}',
+                    style: Theme
+                        .of(context)
                         .textTheme
                         .caption!
                         .copyWith(height: 1.4),
@@ -189,12 +208,67 @@ Widget buildPostItem(
               ),
             ),
             SizedBox(width: 15),
-            IconButton(
-                onPressed: () {},
+            if(isHome == false)
+                  PopupMenuButton<_MenuValues>(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    itemBuilder: (BuildContext context) => [
+                      // PopupMenuItem(
+                      //   child: Text('Edit Post'),
+                      //   value: _MenuValues.edit,
+                      // ),
+                      PopupMenuItem(
+                        child: Text('Save Post'),
+                        value: _MenuValues.save,
+                      ),
+                      PopupMenuItem(
+                        child: Text('Delete Post'),
+                        value: _MenuValues.delete,
+                      ),
+                    ],
+                    onSelected: (value) {
+                      switch (value) {
+
+                        case _MenuValues.save:
+                          var cubit=HomeCubit.get(context);
+                        cubit.SavePost(
+                            postId: model.postId,
+
+                          );
+
+
+                        print('_MenuValues.save ${model.postImage}');
+                        print('_MenuValues.save ${model.image}');
+                        print('_MenuValues.save ${model.text}');
+                        print('_MenuValues.save ${model.dateTime}');
+                        print('_MenuValues.save ${model.likes!.length}');
+                        print('_MenuValues.save ${model.comments!.length}');
+
+                         print('_MenuValues.save ${model!.postId}');
+
+                          break;
+                        case _MenuValues.delete:
+                          HomeCubit.get(context).deletePost(
+                            postId: model!.postId,
+                          );
+                          print('_MenuValues.delete ${model!.postId}');
+                          break;
+
+                      // case _MenuValues.edit:
+                      //   // navigateTo(context, EditPostScreen(model));
+                      //   print('_MenuValues.edit ${model!.postId}');
+                      //
+                      //   break;
+                      }
+
+
+                  },
                 icon: Icon(
                   Icons.more_horiz,
                   size: 16,
-                )),
+                )
+                  ),
           ]),
           // myDivider(),
           Padding(
@@ -207,7 +281,10 @@ Widget buildPostItem(
           ),
           Text(
             '${model.text}',
-            style: Theme.of(context).textTheme.subtitle1,
+            style: Theme
+                .of(context)
+                .textTheme
+                .subtitle1,
           ),
           // Padding(
           //   padding: const EdgeInsets.only(bottom: 10.0, top: 5),
@@ -376,8 +453,6 @@ Widget buildPostItem(
                           LikeScreen(
                             postId: model.postId,
                           ));
-
-
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 5.0),
@@ -391,7 +466,10 @@ Widget buildPostItem(
                           SizedBox(width: 5),
                           Text(
                             '${model.likes!.length} ' ?? '0',
-                            style: Theme.of(context).textTheme.caption,
+                            style: Theme
+                                .of(context)
+                                .textTheme
+                                .caption,
                           ),
                         ],
                       ),
@@ -407,8 +485,8 @@ Widget buildPostItem(
                           CommentScreen(
                             postId: model!.postId,
                           ));
-                      print('HomeCubit.get(context).postsId[index!] ${model.postId}');
-
+                      print('HomeCubit.get(context).postsId[index!] ${model
+                          .postId}');
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 5.0),
@@ -422,8 +500,11 @@ Widget buildPostItem(
                           ),
                           SizedBox(width: 5),
                           Text(
-                            '${model.comments!.length} comment',
-                            style: Theme.of(context).textTheme.caption,
+                            '${model.comments!.length} comment'?? '0 comment',
+                            style: Theme
+                                .of(context)
+                                .textTheme
+                                .caption,
                           ),
                         ],
                       ),
@@ -441,110 +522,141 @@ Widget buildPostItem(
               width: double.infinity,
             ),
           ),
-          if(isSearch==false)
-          Row(
+          if(isSearch == false)
+            Row(
 
-            children: [
-              CircleAvatar(
-                radius: 18,
-                backgroundImage:
-                model.image != null || model.image != ''
-                    ? NetworkImage('${model!.image}')
-                    : Image.asset('assets/images/person.png').image,
-              ),
-              SizedBox(width: 15),
-                  if(isSearch==false)
-              Expanded(
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.6,
-                  child: TextFormField(
-                    controller: commentController,
-                    keyboardType: TextInputType.text,
-                    maxLines: 1,
-                    decoration: InputDecoration(
-                        hintText: 'write a comment ...',
-                        border: InputBorder.none),
-                    validator: (String? value) {
-                      if (value!.isEmpty) {
-                        return 'comment must not be empty';
-                      }
-                      return null;
-                    },
-                    onChanged: (val) {
-                      HomeCubit.get(context).changeLength(val.length);
-                    },
+              children: [
+                CircleAvatar(
+                  radius: 18,
+                  backgroundImage:
+                  model.image != null || model.image != ''
+                      ? NetworkImage('${model!.image}')
+                      : Image
+                      .asset('assets/images/person.png')
+                      .image,
+                ),
+                SizedBox(width: 15),
+                if(isSearch == false)
+                  Expanded(
+                    child: Container(
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width * 0.6,
+                      child: TextFormField(
+                        controller: commentController,
+                        keyboardType: TextInputType.text,
+                        maxLines: 1,
+                        decoration: InputDecoration(
+                            hintText: 'write a comment ...',
+                            border: InputBorder.none),
+                        validator: (String? value) {
+                          if (value!.isEmpty) {
+                            return 'comment must not be empty';
+                          }
+                          return null;
+                        },
+                        onChanged: (val) {
+                          HomeCubit.get(context).changeLength(val.length);
+                        },
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              // if( commentController.text.length > 0)
-              //    SizedBox(width: 15),
-              //
-              if(isSearch==true)
-                Spacer(),
+                // if( commentController.text.length > 0)
+                //    SizedBox(width: 15),
+                //
+                if(isSearch == true)
+                  Spacer(),
 
 
-              if(isSearch==false)
-              if (commentController.text.length > 0)
-                sendToComment(
-                    context,
-                    model.postId,
-                    index,
-                    commentController,
-                    HomeCubit.get(context).model!.name,
-                    HomeCubit.get(context).model!.image,
-                    uId),
+                if(isSearch == false)
+                  if (commentController.text.length > 0)
+                    sendToComment(
+                        context,
+                        model.postId,
+                        index,
+                        commentController,
+                        HomeCubit
+                            .get(context)
+                            .model!
+                            .name,
+                        HomeCubit
+                            .get(context)
+                            .model!
+                            .image,
+                        uId),
 
-              InkWell(
-                onTap: () {
-                  var cubit = HomeCubit.get(context);
-                  // HomeCubit.get(context).followers! +1 ;
-                  HomeCubit.get(context).changeLikeButton();
+                InkWell(
+                  onTap: () {
+                    var cubit = HomeCubit.get(context);
+                    // HomeCubit.get(context).followers! +1 ;
 
-                  print( 'cubit.buttonClicked ${cubit.buttonClicked}');
-                      cubit.buttonClicked ?  cubit.likePostForUser(
-                        id:  HomeCubit.get(context).model!.uId!,
-                       postId: model.postId,
-                        image:   HomeCubit.get(context).model!.image!,
-                        name:   HomeCubit.get(context).model!.name!
+                    print('cubit.buttonClicked ${cubit.buttonClicked}');
+                    cubit.buttonClicked ? cubit.likePostForUser(
+                        id: HomeCubit
+                            .get(context)
+                            .model!
+                            .uId!,
+                        postId: model.postId,
+                        image: HomeCubit
+                            .get(context)
+                            .model!
+                            .image!,
+                        name: HomeCubit
+                            .get(context)
+                            .model!
+                            .name!
 
-                    ):cubit.likePostForUser(
-                          id:  HomeCubit.get(context).model!.uId!,
-                          postId: model.postId,
-                          image:   HomeCubit.get(context).model!.image!,
-                          name:   HomeCubit.get(context).model!.name!
+                    ) : cubit.likePostForUser(
+                        id: HomeCubit
+                            .get(context)
+                            .model!
+                            .uId!,
+                        postId: model.postId,
+                        image: HomeCubit
+                            .get(context)
+                            .model!
+                            .image!,
+                        name: HomeCubit
+                            .get(context)
+                            .model!
+                            .name!
+                    );
+                    // HomeCubit.get(context).changeLikeButton();
 
-                      );
+                    // HomeCubit.get(context).changeLikeButton();
 
-                  // HomeCubit.get(context).changeLikeButton();
+                    // cubit.buttonClicked=!cubit.buttonClicked;
 
-                  // cubit.buttonClicked=!cubit.buttonClicked;
+                  },
 
-                },
-
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.favorite_border,
-                      size: 16,
-                      color: Colors.red,
-                    ),
-                    SizedBox(width: 5),
-                    Text(
-                      'Like',
-                      style: Theme.of(context).textTheme.caption,
-                    ),
-                  ],
-                ),
-              )
-            ],
-          )
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.favorite_border,
+                        size: 16,
+                        color: Colors.red,
+                      ),
+                      SizedBox(width: 5),
+                      Text(
+                        'Like',
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .caption,
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            )
         ],
       ),
     ),
   );
 }
 
-Widget sendToComment(context, postId,index, controller, name, image, id) {
+Widget sendToComment(context, postId, index, controller, name, image, id) {
   return Expanded(
     flex: 1,
     child: IconButton(
@@ -615,20 +727,34 @@ Widget defaultButton({
     );
 
 
-
-
-
-
 Widget followAndUnfollowButton({
   required bool isFollowing,
   required String? id2,
   required String? id1,
+  // required String? name1,
+  // required String? image1,
+  required String? name2,
+  required String? image2,
   context
 }) {
   return isFollowing == false ? Expanded(
     child: defaultButton(
         function: () {
-          HomeCubit.get(context).followUser(uid: id1, followId: id2);
+          HomeCubit.get(context).followUser(
+              uid: id1,
+              followId: id2,
+              image: HomeCubit
+                  .get(context)
+                  .model!
+                  .image!,
+              name: HomeCubit
+                  .get(context)
+                  .model!
+                  .name!,
+              image2: image2,
+              name2: name2
+
+          );
           // HomeCubit.get(context).followers! +1 ;
 
           HomeCubit.get(context).changeFollowButton();
@@ -636,14 +762,25 @@ Widget followAndUnfollowButton({
         }, text: 'Follow', radius: 20, height: 35),
   ) :
   Expanded(child: defaultTextButton(function: () {
-    HomeCubit.get(context).followUser(uid: id1, followId: id2);
+    HomeCubit.get(context).followUser(
+        uid: id1,
+        followId: id2,
+        image: HomeCubit
+            .get(context)
+            .model!
+            .image!,
+        name: HomeCubit
+            .get(context)
+            .model!
+            .name!,
+        image2: image2,
+        name2: name2);
 
     HomeCubit.get(context).changeFollowButton();
     // HomeCubit.get(context).getFollowerForUser(id2);
 
   }, text: 'Unfollow',));
   // HomeCubit.get(context).getFollowerForUser(id2);
-
 
 
 }
@@ -702,3 +839,81 @@ Color chooseToastColor(ToastStates state) {
   }
   return color;
 }
+dynamic selectedMenu = 0;
+//
+// Widget buildMenuPostItem()=>PopupMenuButton(
+//   initialValue: selectedMenu,
+//   // Callback that sets the selected popup menu item.
+//   onSelected: ( item) {
+//       selectedMenu = item;
+//
+//   },
+//   itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+//     const PopupMenuItem(
+//       value: Icon(Icons.edit),
+//       child: Text('Edit post'),
+//     ),
+//     const PopupMenuItem(
+//       value: Icon(Icons.delete_forever),
+//       child: Text('delete post'),
+//     ),
+//
+//   ],
+// );
+
+
+// Widget buildCardMenuForPost(BuildContext context, {String? text, String? postId}) => FocusedMenuHolder(
+//   menuItems: [
+//     FocusedMenuItem(
+//       title: Text('update', style: TextStyle(color: Colors.white)),
+//       trailingIcon: Icon(Icons.edit),
+//       onPressed: () => HomeCubit.get(context).updatePost(postId: postId, text: text),
+//     ),
+//     FocusedMenuItem(
+//       title: Text('Delete', style: TextStyle(color: Colors.white)),
+//       trailingIcon: Icon(Icons.delete_forever, color: Colors.white),
+//       backgroundColor: Colors.red,
+//       onPressed: () => HomeCubit.get(context).deletePost(postId: postId),
+//     ),
+//   ],
+//   blurSize: 8,
+//   blurBackgroundColor: Colors.white,
+//   menuWidth: MediaQuery.of(context).size.width * 0.5,
+//   menuItemExtent: 50,
+//   duration: Duration(seconds: 0),
+//   animateMenuItems: false,
+//   menuOffset: 12,
+//   openWithTap: true,
+//   onPressed: () {},
+//   child: Container(
+//     decoration: BoxDecoration(
+//       border: Border.all(color: Colors.white),
+//       borderRadius: BorderRadius.circular(20),
+//     ),
+//     child: SizedBox(
+//       width: MediaQuery.of(context).size.width * 0.5,
+//       child: Center(
+//         child: Text(
+//           text!,
+//
+//         )
+//       )
+//     )),
+//
+// );
+
+Widget buildItemDrawer(
+    {required Widget? icon,Function()? onTap,required String? title, Color? color, FontWeight? weight,double? fontSize})=>ListTile(
+  leading: icon,
+  onTap:onTap ,
+  title: Text('$title',style: TextStyle(color: color,fontWeight: weight,fontSize:fontSize ,letterSpacing: 1),),
+);
+
+enum _MenuValues {
+  // edit,
+  delete,
+  save,
+}
+
+
+

@@ -62,6 +62,7 @@ class SocialRegisterCubit extends Cubit<SocialRegisterStates> {
       cover: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Emblem-person-blue.svg/2048px-Emblem-person-blue.svg.png',
       followers:[] ,
       following: [],
+      savePost: [],
       isEmailVerified: false,
     );
     FirebaseFirestore.instance

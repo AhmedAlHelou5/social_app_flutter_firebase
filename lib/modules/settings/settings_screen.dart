@@ -3,12 +3,12 @@ import 'package:dialogs/dialogs/choice_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_app_flutter_firebase/layout/home/cubit/states.dart';
-import 'package:social_app_flutter_firebase/modules/login/login_screen.dart';
+import 'package:social_app_flutter_firebase/modules/settings/save_posts_screen.dart';
 import 'package:social_app_flutter_firebase/shared/components/components.dart';
-
 import '../../layout/home/cubit/cubit.dart';
 import '../../shared/components/constants.dart';
 import '../edit_profile/edit_profile_screen.dart';
+
 
 class SettingsScreen extends StatelessWidget {
    SettingsScreen({Key? key}) : super(key: key);
@@ -18,6 +18,7 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // HomeCubit.get(context).getPostForViewProfile(uId);
     HomeCubit.get(context).getPostForSettings();
+    // HomeCubit.get(context).getSavePosteForUser();
 
 
     return BlocConsumer<HomeCubit, HomeStates>(
@@ -146,6 +147,25 @@ class SettingsScreen extends StatelessWidget {
                     )
                 ),
                 SizedBox(width: 10,),
+
+
+                Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        navigateTo(context, SavePostsScreen());
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Posts Save',),
+                          SizedBox(width: 20,),
+                          Icon(Icons.bookmark_outline,size: 16,)
+                        ],
+                      ),
+                    )
+                ),
+
+                SizedBox(width: 10,),
                 OutlinedButton(
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.red),
@@ -167,7 +187,7 @@ class SettingsScreen extends StatelessWidget {
 
                   },
                   child: Icon(Icons.exit_to_app,size: 20,color: Colors.white,),
-                )
+                ),
               ]
             ),
           ),

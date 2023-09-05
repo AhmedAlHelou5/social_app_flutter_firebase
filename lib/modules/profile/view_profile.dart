@@ -166,6 +166,8 @@ class ViewProfileScreen extends StatelessWidget {
                              followAndUnfollowButton(
                               isFollowing: cubit.isFollowing!,
                               id1: uId,
+                              name2: model!.name,
+                              image2:model!.image,
                               id2: model!.uId,
                                context:
                             context,),

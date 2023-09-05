@@ -81,6 +81,7 @@ class FeedsScreen extends StatelessWidget {
                                 cubit.posts[index],
                                 context,
                                 index,
+                               isHome: false,
                                commentController:  commentController[index] ,
 
                               );

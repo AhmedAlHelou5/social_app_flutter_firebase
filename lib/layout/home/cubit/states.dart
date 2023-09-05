@@ -83,6 +83,9 @@ class HomeGetPostsErrorState extends HomeStates {
   HomeGetPostsErrorState(this.error);
 }
 
+
+
+
 class HomeGetFollowersSuccessState extends HomeStates {}
 class HomeGetFollowersLoadingState extends HomeStates {}
 class HomeGetFollowersErrorState extends HomeStates {
@@ -119,6 +122,40 @@ class HomeGetPostsProfileErrorState extends HomeStates {
   final String error;
   HomeGetPostsProfileErrorState(this.error);
 }
+
+
+
+class HomeSavePostSuccessState extends HomeStates {}
+class HomeSavePostLoadingState extends HomeStates {}
+class HomeSavePostErrorState extends HomeStates {
+  final String error;
+  HomeSavePostErrorState(this.error);
+}
+class HomeUnSavePostSuccessState extends HomeStates {}
+class HomeUnSavePostLoadingState extends HomeStates {}
+class HomeUnSavePostErrorState extends HomeStates {
+  final String error;
+  HomeUnSavePostErrorState(this.error);
+}
+
+class HomeCheckSavePostState extends HomeStates {}
+
+
+
+class HomeGetSavePostSuccessState extends HomeStates {}
+class HomeGetSavePostLoadingState extends HomeStates {}
+class HomeGetSavePostErrorState extends HomeStates {
+  final String error;
+  HomeGetSavePostErrorState(this.error);
+}
+
+class HomeGetPostsByIdLoadingState extends HomeStates {}
+class HomeGetPostsByIdSuccessState extends HomeStates {}
+class HomeGetPostsByIdErrorState extends HomeStates {
+  final String error;
+  HomeGetPostsByIdErrorState(this.error);
+}
+
 
 
 
@@ -163,6 +200,19 @@ class HomeGetMessagesSuccessState extends HomeStates {}
 
 
 class HomeChangeButtonFollowState extends HomeStates {}
+
+//delete post
+class HomeDeletePostSuccessState extends HomeStates {}
+class HomeDeletePostErrorState extends HomeStates {
+  final String error;
+  HomeDeletePostErrorState(this.error);
+}
+//update post
+class HomeUpdatePostSuccessState extends HomeStates {}
+class HomeUpdatePostErrorState extends HomeStates {
+  final String error;
+  HomeUpdatePostErrorState(this.error);
+}
 
 
 class HomeFollowUserSuccessState extends HomeStates {}
