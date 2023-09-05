@@ -28,7 +28,7 @@ class UserModel {
       });
 
   UserModel.fromJson(Map<String, dynamic> json) {
-    // var followersList = json['followers'];
+    var followersList = json['followers'];
     var savePostList = json['savePost'];
     uId = json['uId'];
     name = json['name'];
@@ -40,8 +40,8 @@ class UserModel {
     isEmailVerified = json['isEmailVerified'];
     followers = json['followers'];
     following = json['following'];
-    // savePost = json['savePost'];
-    savePost =savePostList.map((i) => PostModel.fromJson(i)).toList();
+    savePost = json['savePost'];
+    // savePost =savePostList.map((i) => PostModel.fromJson(i)).toList();
 
     // following = json['following'];
     // likes =  likes =likeList.map((i) => LikeModel.fromJson(i)).toList();

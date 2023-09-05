@@ -13,24 +13,28 @@ import '../../shared/components/components.dart';
 import '../../shared/styles/colors/colors.dart';
 
 class LikeScreen extends StatelessWidget {
-  String? postId;
+  dynamic postId;
 
   LikeScreen({required this.postId});
 
   // var commentController = TextEditingController();
-  // get index => HomeCubit().posts!.indexWhere((element) => element!.uId== postId);
 
   @override
   Widget build(BuildContext context) {
-    HomeCubit.get(context).getUser(id: postId);
+    HomeCubit.get(context).getLikesPost(postId: postId);
 
     return BlocConsumer<HomeCubit, HomeStates>(
       listener: (context, state) {
         // TODO: implement listener
+        // if (  state is HomeGetPostsSuccessState ||  state is HomeSavePostSuccessState|| state is HomeLikePostSuccessState||state is HomeDisLikePostSuccessState||state is HomeCommentPostSuccessState) {
+        //   HomeCubit.get(context).getLikesPost(postId: postId);
+        // }
       },
       builder: (context, state) {
         var cubit = HomeCubit.get(context);
         // var model = cubit.posts;
+        print('cubit.postLikes.length ${cubit.postLikes.length}');
+        print('cubit.postLikes.length ${cubit.postLikes}');
 
         return Scaffold(
           appBar: AppBar(title: Text('Likes'), centerTitle: true),
@@ -38,18 +42,18 @@ class LikeScreen extends StatelessWidget {
             physics: BouncingScrollPhysics(),
             child: ConditionalBuilder(
 
-              condition:cubit.posts[cubit.postsId.indexOf(postId)]!.likes!.length > 0,
+              condition:cubit.postLikes.length > 0,
               builder:(contex) => ListView.separated(
                 itemBuilder: (context, index) {
                   // print( postId.likes![index]);
                   return buildLikeItem(
-                    cubit.posts[cubit.postsId.indexOf(postId)]!.likes![index],
+                    cubit.postLikes,
                       context,
                       index,
                       );
                 },
                 itemCount:
-                cubit.posts[cubit.postsId.indexOf(postId)]!.likes!.length,
+                cubit.postLikes.length,
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 separatorBuilder: (BuildContext context, int index) =>
@@ -87,7 +91,7 @@ class LikeScreen extends StatelessWidget {
             Row(children: [
               CircleAvatar(
                 radius: 25,
-                backgroundImage: NetworkImage('${cubit.posts[cubit.postsId.indexOf(postId)]!.likes![index!].image}'),
+                backgroundImage: NetworkImage('${cubit.postLikes[index!]!.image}'),
               ),
               SizedBox(width: 15),
               Expanded(
@@ -97,7 +101,7 @@ class LikeScreen extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          '${cubit.posts[cubit.postsId.indexOf(postId)]!.likes![index].name}',
+                          '${cubit.postLikes[index]!.name}',
                           style: TextStyle(height: 1.4),
                         ),
                         SizedBox(width: 5),

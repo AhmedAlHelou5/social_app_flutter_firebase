@@ -241,6 +241,9 @@ class HomeCubit extends Cubit<HomeStates> {
       email: model!.email,
       uId: model!.uId,
       isEmailVerified: false,
+      savePost: model!.savePost,
+      following: model!.following,
+      followers: model!.followers,
     );
 
     FirebaseFirestore.instance.collection('users').doc(model!.uId).update({
@@ -252,6 +255,9 @@ class HomeCubit extends Cubit<HomeStates> {
       'email': userModel.email,
       'uId': userModel.uId,
       'isEmailVerified': userModel.isEmailVerified,
+      'savePost': userModel.savePost,
+      'following': userModel.following,
+      'followers': userModel.followers,
     }).then((value) {
       getUserData();
     }).catchError((error) {
@@ -324,6 +330,8 @@ class HomeCubit extends Cubit<HomeStates> {
       emit(HomeChangeBottomNavBarState());
       getPostsData();
       getPostForSettings();
+      getAllUsersWithMe();
+
     }
   }
 
@@ -411,47 +419,8 @@ class HomeCubit extends Cubit<HomeStates> {
     getPostsData();
   }
 
-  //
-  // void uploadPostImageEdit({
-  //   required String? text,
-  //   required String? postId,
-  // }) {
-  //   emit(HomeCreatePostLoadingState());
-  //   firebase_storage.FirebaseStorage.instance
-  //       .ref()
-  //       .child('posts/${Uri
-  //       .file(imagePostFile!.path)
-  //       .pathSegments
-  //       .last}')
-  //       .putFile(imagePostFile!)
-  //       .then((value) {
-  //     value.ref.getDownloadURL().then((value) {
-  //       print('url: $value');
-  //       // updatePost(
-  //       //   image: value,
-  //       //   text: text!, postId: postId,
-  //       // );
-  //       getPostsData();
-  //
-  //       emit(HomeCreatePostSuccessState());
-  //       getPostsData();
-  //       // updateUser(name: name, phone: phone, bio: bio,cover: value);
-  //     }).catchError((error) {
-  //       print(error.toString());
-  //       emit(HomeCreatePostErrorState());
-  //     });
-  //   }).catchError((error) {
-  //     print(error.toString());
-  //     emit(HomeCreatePostErrorState());
-  //   });
-  // }
-
-
-
-  // List<dynamic> comments = [];
   List<UserModel?> users = [];
 
-  // List<int> likes = [];
   List<PostModel?> postsForUser = [];
   List<PostModel?> postsForSettings = [];
   List<PostModel?> postsForSaves = [];
@@ -700,6 +669,37 @@ class HomeCubit extends Cubit<HomeStates> {
     });
   }
 
+  List<dynamic?> usersWithMe = [];
+
+  void getAllUsersWithMe() {
+    emit(HomeGetAllUserLoadingState());
+    usersWithMe = [];
+
+    // if (users.length == 0)
+    FirebaseFirestore.instance.collection('users').get().then((value) {
+      value.docs.forEach(
+            (result) {
+            usersWithMe.add(
+              UserModel.fromJson(
+                result.data(),
+              ),
+            );
+          print('getalluser////////////: ${usersWithMe}');
+        },
+      );
+      print('getalluser////////////: ${usersWithMe}');
+      emit(HomeGetAllUserSuccessState());
+    }).catchError((error) {
+      print(error.toString());
+      emit(HomeGetAllUserErrorState(error.toString()));
+    });
+  }
+
+
+
+
+
+
   void sendMessage({
     required String? text,
     required String? dateTime,
@@ -794,6 +794,7 @@ class HomeCubit extends Cubit<HomeStates> {
 
 
   void SavePost({postId}) {
+
     FirebaseFirestore.instance.collection('users').doc(uId).get().then((value) {
       List saves = [];
 
@@ -807,15 +808,19 @@ class HomeCubit extends Cubit<HomeStates> {
         });
         // getSavePost();
         emit(HomeSavePostSuccessState());
+        getSavePost();
+
       } else {
         FirebaseFirestore.instance.collection('users').doc(uId).update({
           'savePost': FieldValue.arrayRemove([postId])
         });
-        // getSavePost();
         emit(HomeUnSavePostSuccessState());
+        getSavePost();
+
         // changeSaveButton();
       }
       isSavePost = value.data()!['savePost'].contains(postId) ? true : false;
+      getSavePost();
     }).catchError((e) {
       print(e.toString());
       emit(HomeSavePostErrorState(e.toString()));
@@ -825,46 +830,164 @@ class HomeCubit extends Cubit<HomeStates> {
     // buttonClicked=!buttonClicked;
   }
 
-  void likePostForUser({postId, context, image, id, name}) {
-    LikeModel likeModel = LikeModel(
-      name: name,
-      uId: id,
-      image: image,
-      postId: postId,
-    );
+  // void likePostForUser({PostModel ? model,}) {
+  //
+  //   FirebaseFirestore.instance
+  //       .collection('posts')
+  //       .doc(postId)
+  //       .get()
+  //       .then((value) {
+  //     List likes = [];
+  //
+  //     value.data()!['likes'].forEach((element) {
+  //       likes.add(element!);
+  //       print(' /////////////////likes ::: $likes');
+  //     });
+  //     if (!likes.contains(model!.uId)) {
+  //       FirebaseFirestore.instance.collection('posts').doc(postId).update({
+  //         'likes': FieldValue.arrayUnion([model!.uId])
+  //       });
+  //       emit(HomeLikePostSuccessState());
+  //       // getPostsById(postId);
+  //     }else {
+  //       FirebaseFirestore.instance.collection('posts').doc(postId).update({
+  //         'likes': FieldValue.arrayRemove([model!.uId])
+  //       });
+  //       emit(HomeDisLikePostSuccessState());
+  //     }
+  //     // buttonClicked = value.data()!['likes'].contains(model!.uId) ? true : false;
+  //
+  //   }).catchError((e) {
+  //     print(e.toString());
+  //     emit(HomeLikePostErrorState(e.toString()));
+  //   });
+  //
+  // }
+  // Future<String> likePost(String postId, String uid, List likes) async {
+  //   try {
+  //     if (likes.contains(uid)) {
+  //       // if the likes list contains the user uid, we need to remove it
+  //       FirebaseFirestore.instance.collection('posts').doc(postId).update({
+  //         'likes': FieldValue.arrayRemove([uid])
+  //       });
+  //     } else {
+  //       // else we need to add uid to the likes array
+  //       _firestore.collection('posts').doc(postId).update({
+  //         'likes': FieldValue.arrayUnion([uid])
+  //       });
+  //     }
+  //     res = 'success';
+  //   } catch (err) {
+  //     res = err.toString();
+  //   }
+  //   return res;
+  // }
+  //
+  //
 
-    //
 
-    FirebaseFirestore.instance
-        .collection('posts')
-        .doc(postId)
-        .get()
-        .then((value) {
-      List likes = [];
 
-      value.data()!['likes'].forEach((element) {
-        likes.add(element!);
-        print(' /////////////////likes ::: $likes');
-      });
-      if (!likes.contains(id)) {
-        FirebaseFirestore.instance.collection('posts').doc(postId).update({
-          'likes': FieldValue.arrayUnion([likeModel.toMap()])
+
+
+
+
+
+  //
+  // List<dynamic> postLikes = [];
+  // List<String?> postsLikesId = [];
+  // // List<PostModel?> posts = [];
+
+  //
+  // void getLikesPost(postId){
+  //   postsLikesId=[];
+  //   emit(HomeGetLikesPostLoadingState());
+  //   // getPostsData();
+  //   postLikes=[];
+  //   FirebaseFirestore.instance
+  //       .collection('posts')
+  //       .where('postId', isEqualTo: postId)
+  //       .get().then((value) =>
+  //       value.docs.forEach((element) {
+  //         element.data()!['likes'] .forEach((element) {
+  //           postsLikesId.add(element);
+  //           postLikes=[];
+  //
+  //           users.forEach((user) {
+  //             if(user!.uId==element)
+  //               postLikes.add(user);
+  //           });
+  //
+  //
+  //           emit(HomeGetLikesPostSuccessState());
+  //           // getPostsData();
+  //
+  //           // postSave.add(PostModel.fromJson(element));
+  //         });
+  //       })
+  //   ).catchError((error) {
+  //     print(error.toString());
+  //     emit(HomeGetLikesPostErrorState(error.toString()));
+  //
+  //
+  //   });
+  //   print('/////////////////////////postsSaveId ::: $postsSaveId');
+  //   // getPostsData();
+  //
+  //
+  // }
+
+
+
+
+
+
+
+  void likePost(
+      {  postId,}) {
+      // emit(HomeFollowUserLoadingState());
+
+      FirebaseFirestore.instance
+          .collection('posts')
+          .doc(postId)
+          .get()
+          .then((value) {
+        List likesList= [];
+        value.data()!['likes'].forEach((element) {
+          likesList.add(element!);
+          print(' /////////////////likes ::: $likesList');
         });
-        emit(HomeLikePostSuccessState());
-        // getPostsById(postId);
-      }
-      FirebaseFirestore.instance.collection('posts').doc(postId).update({
-        'likes': FieldValue.arrayRemove([likeModel.toMap()])
-      });
-      buttonClicked = value.data()!['likes'].contains(uId) ? true : false;
 
-      emit(HomeDisLikePostSuccessState());
-    }).catchError((e) {
-      print(e.toString());
-      emit(HomeLikePostErrorState(e.toString()));
-    });
+        if (!likesList.contains(uId)) {
+          FirebaseFirestore.instance.collection('posts').doc(postId).update({
+            'likes': FieldValue.arrayUnion([uId])
+          });
+          getPostsData();
+
+          emit(HomeLikePostSuccessState());
+        }else {
+          FirebaseFirestore.instance.collection('posts').doc(postId).update({
+            'likes': FieldValue.arrayRemove([uId]),
+          });
+          getPostsData();
+          emit(HomeDisLikePostSuccessState());}
+        buttonClicked = likesList.contains( uId) ? true : false;
+          emit(HomeDisLikePostSuccessState());
+      }).catchError((e) {
+        print(e.toString());
+        emit(HomeFollowUserErrorState(e.toString()));
+      });
 
   }
+
+
+
+
+
+
+
+
+
+
 
   void followUser(
       {String? uid,
@@ -986,6 +1109,53 @@ class HomeCubit extends Cubit<HomeStates> {
 
 
 
+  //
+  // List<dynamic?> postSave = [];
+  // List<String?> postsSaveId = [];
+  // // List<PostModel?> posts = [];
+  //
+  //
+  // void getSavePost(){
+  //   postsSaveId=[];
+  //   emit(HomeGetSavePostLoadingState());
+  //   // getPostsData();
+  //   postSave=[];
+  //    FirebaseFirestore.instance
+  //       .collection('users')
+  //       // .where('uId', isEqualTo: model!.uId)
+  //       .get().then((value) =>
+  //    value.docs.forEach((element) {
+  //      element.data()['savePost'].forEach((element) {
+  //        // postsSaveId.add(element);
+  //        postSave=[];
+  //
+  //          posts.forEach((post) {
+  //            if(post==element)
+  //              postSave.add(post);
+  //            print('/////////////////////////post!.postId ::: ${post!.postId}');
+  //
+  //          });
+  //        print('/////////////////////////postSave ::: $postSave');
+  //        print('/////////////////////////element ::: $element');
+  //
+  //          // getPostsData();
+  //
+  //        // postSave.add(PostModel.fromJson(element));
+  //      });
+  //    })
+  //   ).catchError((error) {
+  //     print(error.toString());
+  //     emit(HomeGetSavePostErrorState(error.toString()));
+  //
+  //
+  //   });
+  //    print('/////////////////////////postsSaveId ::: $postsSaveId');
+  //   // getPostsData();
+  //
+  //
+  // }
+  //
+
 
   List<dynamic?> postSave = [];
   List<String?> postsSaveId = [];
@@ -993,76 +1163,153 @@ class HomeCubit extends Cubit<HomeStates> {
 
 
   void getSavePost(){
-    postsSaveId=[];
     emit(HomeGetSavePostLoadingState());
-    // getPostsData();
+    getPostsData();
     postSave=[];
-     FirebaseFirestore.instance
+    postsSaveId=[];
+
+
+    FirebaseFirestore.instance
         .collection('users')
-        .where('uId', isEqualTo: model!.uId)
+        .where('uId', isEqualTo: uId)
         .get().then((value) =>
-     value.docs.forEach((element) {
-       element.data()!['savePost'] .forEach((element) {
-         postsSaveId.add(element);
-         postSave=[];
+        value.docs.forEach((element) {
+          postSave=[];
 
-           posts.forEach((post) {
-             if(post!.postId==element)
-               postSave.add(post);
-           });
+          element.data()!['savePost'].forEach((element) {
+            postsSaveId.add(element);
+            // postsSave=[];
 
-           // getPostsData();
 
-         // postSave.add(PostModel.fromJson(element));
-       });
-     })
+              posts.forEach((post) {
+                if(post!.postId==element)
+                  postSave.add(post);
+                print('/////////////////////////postSave ::: $postSave');
+                print('/////////////////////////element ::: $element');});
+
+
+
+
+            // getPostsData();
+
+            // postSave.add(PostModel.fromJson(element));
+          });
+        })
     ).catchError((error) {
       print(error.toString());
       emit(HomeGetSavePostErrorState(error.toString()));
 
 
     });
-     print('/////////////////////////postsSaveId ::: $postsSaveId');
+    print('/////////////////////////postsSaveId ::: $postsSaveId');
     // getPostsData();
 
 
   }
 
-
-  // List<String?> postsId = [];
+  List<dynamic?> postLikes = [];
+  List<String?> postsLikeId = [];
   // List<PostModel?> posts = [];
-  // void getPostsData() {
-  //   emit(HomeGetPostsLoadingState());
+
+
+  // void getLikesPost({postId}){
+  //   emit(HomeGetLikesPostLoadingState());
+  //   getAllUsersWithMe();
+  //   getPostsData();
+  //   postLikes=[];
+  //
   //   FirebaseFirestore.instance
   //       .collection('posts')
-  //       .orderBy('dateTime', descending: true)
-  //       .get()
-  //       .then((value) {
-  //     posts = [];
-  //     postsId = [];
-  //     // comments=[];
+  //       .doc(postId)
+  //       // .where('postId', isEqualTo:postId)
+  //       .get().then((value) =>
+  //       value.data()!['likes'].forEach((element) {
+  //         usersWithMe.forEach(( id) {
+  //             if(element==id!.uId)
+  //               postLikes.add(
+  //                 id!,
+  //               );
+  //           });
   //
-  //     value.docs.forEach(
-  //           (result) {
-  //         postsId.add(result.id);
-  //         posts.add(
-  //           PostModel.fromJson(
-  //             result.data(),
-  //           ),
-  //         );
+  //           print('element.data()![likes] ::: ${value.data()!['likes']}');
   //
-  //         print(result.data());
+  //           print('postLikes ::: $postLikes');
+  //           print('element ::: ${element}');
+  //           getPostsData();
   //
-  //         emit(HomeGetPostsSuccessState());
-  //         //
-  //       },
-  //     );
-  //   }).catchError((error) {
+  //           // postSave.add(PostModel.fromJson(element));
+  //       })
+  //   ).catchError((error) {
   //     print(error.toString());
-  //     emit(HomeGetPostsErrorState(error.toString()));
+  //     emit(HomeGetLikesPostErrorState(error.toString()));
+  //
+  //
   //   });
+  //   print('/////////////////////////postLikes ::: $postLikes');
+  //   // getPostsData();
+  //
+  //
   // }
 
+  void getLikesPost({postId}){
+    emit(HomeGetSavePostLoadingState());
+    getPostsData();
+    // getUserData();
+    getAllUsersWithMe();
+    // getAllUsersWithMe();
+    postLikes=[];
+    postsLikeId=[];
+
+
+    FirebaseFirestore.instance
+        .collection('posts')
+        .where('postId', isEqualTo: postId)
+        .get().then((value) =>
+        value.docs.forEach((element) {
+          postLikes=[];
+
+          element.data()!['likes'].forEach((element) {
+            postsLikeId.add(element);
+            // postsSave=[];
+
+            postsLikeId.forEach((element) {
+              usersWithMe.forEach(( userId) {
+                if(element==userId!.uId)
+                  postLikes.add(
+                    userId!,
+                  );
+              });
+              print('/////////////////////////postSave ::: $postSave');
+              print('/////////////////////////element ::: $element');
+
+          });
+
+            //
+            // usersWithMe.forEach((post) {
+            //   if(post!.postId==element)
+            //     postLikes.add(post);
+            //
+            //
+
+
+
+
+            // getPostsData();
+
+            // postSave.add(PostModel.fromJson(element));
+          });
+        })
+    ).catchError((error) {
+      print(error.toString());
+      emit(HomeGetSavePostErrorState(error.toString()));
+
+
+    });
+    print('/////////////////////////postsSaveId ::: $postsSaveId');
+    // getPostsData();
+
+
+  }
 
 
 

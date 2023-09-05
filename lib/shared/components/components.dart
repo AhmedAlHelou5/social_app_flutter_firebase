@@ -153,7 +153,7 @@ Widget buildMyMessage(MessageModel message, context, {Key? key}) =>
       ),
     );
 
-Widget buildPostItem( PostModel? model,
+Widget buildPostItem(PostModel?  model,
     context,
     int? index,
     {commentController, isSearch = false, isHome = false}) {
@@ -237,7 +237,7 @@ Widget buildPostItem( PostModel? model,
 
                           );
 
-
+                         HomeCubit.get(context).getSavePost();
                         print('_MenuValues.save ${model.postImage}');
                         print('_MenuValues.save ${model.image}');
                         print('_MenuValues.save ${model.text}');
@@ -465,7 +465,7 @@ Widget buildPostItem( PostModel? model,
                           ),
                           SizedBox(width: 5),
                           Text(
-                            '${model.likes!.length} ' ?? '0',
+                            '${model.likes!.length} '??'0'  ,
                             style: Theme
                                 .of(context)
                                 .textTheme
@@ -500,7 +500,7 @@ Widget buildPostItem( PostModel? model,
                           ),
                           SizedBox(width: 5),
                           Text(
-                            '${model.comments!.length} comment'?? '0 comment',
+                            '${model.comments!.length} comment'?? '0',
                             style: Theme
                                 .of(context)
                                 .textTheme
@@ -592,37 +592,14 @@ Widget buildPostItem( PostModel? model,
                     // HomeCubit.get(context).followers! +1 ;
 
                     print('cubit.buttonClicked ${cubit.buttonClicked}');
-                    cubit.buttonClicked ? cubit.likePostForUser(
-                        id: HomeCubit
-                            .get(context)
-                            .model!
-                            .uId!,
-                        postId: model.postId,
-                        image: HomeCubit
-                            .get(context)
-                            .model!
-                            .image!,
-                        name: HomeCubit
-                            .get(context)
-                            .model!
-                            .name!
+                    cubit.buttonClicked  ? cubit.likePost(
+                      postId:model.postId,
 
-                    ) : cubit.likePostForUser(
-                        id: HomeCubit
-                            .get(context)
-                            .model!
-                            .uId!,
-                        postId: model.postId,
-                        image: HomeCubit
-                            .get(context)
-                            .model!
-                            .image!,
-                        name: HomeCubit
-                            .get(context)
-                            .model!
-                            .name!
+                    ) : cubit.likePost(
+                      postId: model.postId,
+
                     );
-                    // HomeCubit.get(context).changeLikeButton();
+                    HomeCubit.get(context).changeLikeButton();
 
                     // HomeCubit.get(context).changeLikeButton();
 

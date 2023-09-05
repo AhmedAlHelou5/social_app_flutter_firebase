@@ -18,15 +18,25 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // HomeCubit.get(context).getPostForViewProfile(uId);
     HomeCubit.get(context).getPostForSettings();
+    HomeCubit.get(context).getPostsData();
+    HomeCubit.get(context).getUserData();
+    HomeCubit.get(context).getUser(id: uId);
+
+
     // HomeCubit.get(context).getSavePosteForUser();
+    // HomeCubit.get(context).getSavePost();
 
 
     return BlocConsumer<HomeCubit, HomeStates>(
   listener: (context, state) {
     // TODO: implement listener
-    if(state is HomeCreatePostSuccessState ||state is HomeLikePostSuccessState || state is HomeDisLikePostSuccessState || state is HomeCommentPostSuccessState)
+    if(state is HomeCreatePostSuccessState ||state is HomeLikePostSuccessState ||
+        state is HomeDisLikePostSuccessState || state is HomeCommentPostSuccessState) {
       HomeCubit.get(context).getPostForSettings();
+      // HomeCubit.get(context).getSavePost();
+      HomeCubit.get(context).getPostsData();
 
+    }
   },
   builder: (context, state) {
     var cubit = HomeCubit.get(context);
@@ -87,7 +97,7 @@ class SettingsScreen extends StatelessWidget {
                       onTap: () {},
                       child: Column(
                           children: [
-                            Text('${postsForUser.length}',style: Theme.of(context).textTheme.subtitle2,),
+                            Text('${cubit.postsForSettings.length}'??'0',style: Theme.of(context).textTheme.subtitle2,),
                             Text('posts',style: Theme.of(context).textTheme.caption,),
 
 
@@ -101,7 +111,7 @@ class SettingsScreen extends StatelessWidget {
                       onTap: () {},
                       child: Column(
                           children: [
-                            Text('${cubit.model!.followers!.length}',style: Theme.of(context).textTheme.subtitle2,),
+                            Text('${cubit.model!.followers!.length}'??'0',style: Theme.of(context).textTheme.subtitle2,),
                             Text('Followers',style: Theme.of(context).textTheme.caption,),
 
 
@@ -115,7 +125,7 @@ class SettingsScreen extends StatelessWidget {
                       onTap: () {},
                       child: Column(
                           children: [
-                            Text('${cubit.model!.following!.length}',style: Theme.of(context).textTheme.subtitle2,),
+                            Text('${cubit.model!.following!.length}'??'0',style: Theme.of(context).textTheme.subtitle2,),
                             Text('Followings',style: Theme.of(context).textTheme.caption,),
 
 
@@ -199,7 +209,7 @@ class SettingsScreen extends StatelessWidget {
 
               commentController.add(new TextEditingController());
               return buildPostItem(
-                postsForUser[index],
+                cubit.postsForSettings[index],
                 context,
                 index,
                 commentController: commentController[index]??0,
@@ -212,7 +222,7 @@ class SettingsScreen extends StatelessWidget {
 
 
             },
-            itemCount: postsForUser.length,
+            itemCount: cubit.postsForSettings.length,
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             separatorBuilder: (BuildContext context, int index) =>

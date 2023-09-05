@@ -32,6 +32,13 @@ class HomeGetAllUserErrorState extends HomeStates {
   HomeGetAllUserErrorState(this.error);
 }
 
+class HomeGetAllUserWithMeSuccessState extends HomeStates {}
+class HomeGetAllUserWithMeLoadingState extends HomeStates {}
+class HomeGetAllUserWithMeErrorState extends HomeStates {
+  final String error;
+  HomeGetAllUserWithMeErrorState(this.error);
+}
+
 
 class HomeChangeBottomNavBarState extends HomeStates {}
 class HomeNewPostState extends HomeStates {}
@@ -147,6 +154,13 @@ class HomeGetSavePostLoadingState extends HomeStates {}
 class HomeGetSavePostErrorState extends HomeStates {
   final String error;
   HomeGetSavePostErrorState(this.error);
+}
+
+class HomeGetLikesPostSuccessState extends HomeStates {}
+class HomeGetLikesPostLoadingState extends HomeStates {}
+class HomeGetLikesPostErrorState extends HomeStates {
+  final String error;
+  HomeGetLikesPostErrorState(this.error);
 }
 
 class HomeGetPostsByIdLoadingState extends HomeStates {}

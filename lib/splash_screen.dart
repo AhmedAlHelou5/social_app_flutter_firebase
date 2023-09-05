@@ -17,6 +17,7 @@ class SplashScreen extends StatelessWidget {
     HomeCubit.get(context)
       ..getUserData()
       ..getAllUsers()
+      // ..getSavePost()
       ..getPostsData();
     var login = CacheHelper.getData(key: 'login');
     uId = CacheHelper.getData(key: 'uId');

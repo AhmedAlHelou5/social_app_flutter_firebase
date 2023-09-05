@@ -1,4 +1,5 @@
 import 'package:social_app_flutter_firebase/models/post/like_model.dart';
+import 'package:social_app_flutter_firebase/models/user/user_model.dart';
 
 import 'comment_model.dart';
 
@@ -10,8 +11,8 @@ class PostModel {
   String? image;
   String? text;
   String? postImage;
-  dynamic? comments;
-  dynamic? likes;
+  List<dynamic>? comments;
+  dynamic likes;
 
   PostModel({
          this.uId,
@@ -27,7 +28,8 @@ class PostModel {
 
   PostModel.fromJson(Map<String, dynamic> json) {
     var commentList = json['comments'] ;
-    var likeList = json['likes'];
+    var likesList = json['likes'] ;
+    // var likeList = json['likes'];
     uId = json['uId'];
     postId = json['postId'];
     name = json['name'];
@@ -36,7 +38,9 @@ class PostModel {
     image = json['image'];
     dateTime = json['dateTime'];
     comments =commentList.map((i) => CommentModel.fromJson(i)).toList();
-    likes =likeList.map((i) => LikeModel.fromJson(i)).toList();
+    // likes =likesList.map((i) => UserModel.fromJson(i)).toList();
+
+    likes = json['likes'];
     // likes =likeList.map((i) => LikeModel.fromJson(i)).toList();
 
   }

@@ -24,6 +24,8 @@ class HomeLayout extends StatelessWidget {
     HomeCubit.get(context)
       ..getUserData()
       ..getAllUsers()
+      ..getAllUsersWithMe()
+      // ..getSavePost()
       ..getPostsData();
 
     return BlocConsumer<HomeCubit, HomeStates>(

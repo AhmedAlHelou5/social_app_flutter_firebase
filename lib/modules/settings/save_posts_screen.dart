@@ -30,9 +30,11 @@ class SavePostsScreen extends StatelessWidget {
           print(' HomeCubit.get(context).postsSave.length ${HomeCubit.get(context).postSave.length}');
           return BlocConsumer<HomeCubit, HomeStates>(
               listener: (context, state) {
-                // // TODO: implement listener
-                if(state is HomeSavePostSuccessState ||state is HomeUnSavePostSuccessState ||state is HomeLikePostSuccessState || state is HomeDisLikePostSuccessState || state is HomeCommentPostSuccessState)
-                  HomeCubit.get(context).getSavePost();
+                // // TODO   if(state is HomeSavePostSuccessState ||state is HomeUnSavePostSuccessState ||state is HomeDeletePostSuccessState) {
+                //                   HomeCubit.get(context).getSavePost();
+                //                 }: implement listener
+
+                  // HomeCubit.get(context).getSavePost();
 
 
               },

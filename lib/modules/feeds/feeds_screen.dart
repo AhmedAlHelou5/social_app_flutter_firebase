@@ -12,7 +12,6 @@ import '../../shared/components/components.dart';
 
 class FeedsScreen extends StatelessWidget {
    FeedsScreen({Key? key}) : super(key: key);
-  // var commentController = TextEditingController();
    List<TextEditingController> commentController = [];
 
   @override
@@ -20,15 +19,9 @@ class FeedsScreen extends StatelessWidget {
     return Builder(
       builder: (context) {
         HomeCubit.get(context).getPostsData();
-      // HomeCubit.get(context).  getCommentPostsData(postId)
         return BlocConsumer<HomeCubit, HomeStates>(
             listener: (context, state) {
               // TODO: implement listener
-              if(state is HomeCreatePostSuccessState)
-                HomeCubit.get(context).getPostsData();
-              if(state is HomeLikePostSuccessState || state is HomeDisLikePostSuccessState || state is HomeCommentPostSuccessState)
-                HomeCubit.get(context).getPostsData();
-
 
             },
             builder: (context, state) {
@@ -78,7 +71,7 @@ class FeedsScreen extends StatelessWidget {
                             //     .get(context)
                             //     .postsId[index]);
                             return buildPostItem(
-                                cubit.posts[index],
+                                cubit.posts[index] ,
                                 context,
                                 index,
                                isHome: false,
