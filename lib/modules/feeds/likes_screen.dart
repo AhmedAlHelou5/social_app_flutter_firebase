@@ -26,9 +26,13 @@ class LikeScreen extends StatelessWidget {
     return BlocConsumer<HomeCubit, HomeStates>(
       listener: (context, state) {
         // TODO: implement listener
-        // if (  state is HomeGetPostsSuccessState ||  state is HomeSavePostSuccessState|| state is HomeLikePostSuccessState||state is HomeDisLikePostSuccessState||state is HomeCommentPostSuccessState) {
+        // HomeCubit.get(context).getLikesPost(postId: postId);
+        // if ( state is HomeGetPostsSuccessState|| state is HomeGetAllUserSuccessState)
         //   HomeCubit.get(context).getLikesPost(postId: postId);
-        // }
+        if ( state is HomeInitialState|| state is HomeCreatePostSuccessState|| state is HomeSavePostSuccessState || state is HomeLikePostSuccessState||state is HomeDisLikePostSuccessState||state is HomeCommentPostSuccessState) {
+          HomeCubit.get(context).getLikesPost(postId: postId);
+
+        }
       },
       builder: (context, state) {
         var cubit = HomeCubit.get(context);
@@ -47,7 +51,7 @@ class LikeScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   // print( postId.likes![index]);
                   return buildLikeItem(
-                    cubit.postLikes,
+                    cubit.postLikes[index],
                       context,
                       index,
                       );
@@ -60,7 +64,7 @@ class LikeScreen extends StatelessWidget {
                     SizedBox(height: 8),
               ),
               fallback: (context) => Center(
-                child: Text('No Likes in This Post'),
+                child: CircularProgressIndicator(),
               ),
             ),
           ),

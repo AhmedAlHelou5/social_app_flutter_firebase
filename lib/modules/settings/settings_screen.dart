@@ -20,7 +20,7 @@ class SettingsScreen extends StatelessWidget {
     HomeCubit.get(context).getPostForSettings();
     HomeCubit.get(context).getPostsData();
     HomeCubit.get(context).getUserData();
-    HomeCubit.get(context).getUser(id: uId);
+    // HomeCubit.get(context).getUser(id: uId);
 
 
     // HomeCubit.get(context).getSavePosteForUser();

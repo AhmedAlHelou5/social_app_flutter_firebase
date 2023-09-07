@@ -64,22 +64,7 @@ class HomeCubit extends Cubit<HomeStates> {
     'delete post',
   ];
 
-  // List<PopupMenuItem> menu = [
-  //   PopupMenuItem(
-  //     child:  buildItemDrawer(icon:Icon(Icons.edit),title: 'edit post',
-  //       weight: FontWeight.w600,fontSize:18),
-  //   ),
-  //   PopupMenuItem(
-  //     child:  buildItemDrawer(icon:Icon(Icons.delete_forever),title: 'delete post',
-  //         weight: FontWeight.w600,fontSize:18),
-  //   ),
-  //   PopupMenuItem(
-  //     child:  buildItemDrawer(icon:Icon(Icons.bookmark_outline),title: 'save post',
-  //         weight: FontWeight.w600,fontSize:18),
-  //   ),
-  //
-  // ];
-  //
+
 
   void getSearchPostsData(String textSearch) {
     emit(HomeSearchLoadingState());
@@ -266,15 +251,6 @@ class HomeCubit extends Cubit<HomeStates> {
     });
   }
 
-  void getUser({id}) {
-    FirebaseFirestore.instance.collection('users').doc(id).get().then((value) {
-      model = UserModel.fromJson(value.data()!);
-      emit(HomeGetUserSuccessState());
-    }).catchError((error) {
-      print(error.toString());
-      emit(HomeErrorState(error.toString()));
-    });
-  }
 
   int currentIndex = 0;
 
@@ -594,55 +570,7 @@ class HomeCubit extends Cubit<HomeStates> {
   }
 
 
-  void getPostForUserSave() {
-    emit(HomeGetPostsLoadingState());
-    FirebaseFirestore.instance
-        .collection('posts')
-        .orderBy('dateTime', descending: true)
-        .get()
-        .then((value) {
-      posts = [];
-      postsForSaves = [];
 
-      value.docs.forEach(
-        (result) {
-          // postsId.add(result.id);
-          posts.add(
-            PostModel.fromJson(
-              result.data(),
-            ),
-          );
-          //like
-          postsForSaves = [];
-
-          posts.forEach((element) {
-            if (element!.uId == uId) {
-              postsForSaves.add(element);
-            }
-          });
-        },
-      );
-      emit(HomeGetPostsSuccessState());
-    }).catchError((error) {
-      print(error.toString());
-      emit(HomeGetPostsErrorState(error.toString()));
-    });
-    getPostsData();
-  }
-
-  // Future<List<String>?> fetchDocumentIds() async {
-  //   final QuerySnapshot snapshot =
-  //       await  FirebaseFirestore.instance.collection('users').get();
-  //   return snapshot.docs.map((doc) => doc.id).toList();
-  // }
-  //
-  // Future<PostModel?> fetchItemById(String id) async {
-  //   final DocumentSnapshot snapshot = await FirebaseFirestore.instance
-  //       .collection('posts')
-  //       .doc(id)
-  //       .get();
-  //   return PostModel.fromJson(snapshot.data() as Map<String, dynamic>);
-  // }
 
   void getAllUsers() {
     emit(HomeGetAllUserLoadingState());
@@ -702,12 +630,12 @@ class HomeCubit extends Cubit<HomeStates> {
 
   void sendMessage({
     required String? text,
-    required String? dateTime,
+    required Timestamp? dateTime,
     required String? recieverId,
   }) {
     MessageModel? messageModel = MessageModel(
       text: text!,
-      dateTime: dateTime!,
+      dateTime: dateTime!.toString(),
       receiverId: recieverId,
       senderId: model!.uId,
     );
@@ -752,6 +680,7 @@ class HomeCubit extends Cubit<HomeStates> {
   }
 
   List<MessageModel> messages = [];
+  bool? isMe;
 
   void getMessages({
     required String? recieverId,
@@ -763,30 +692,37 @@ class HomeCubit extends Cubit<HomeStates> {
         .doc(recieverId)
         .collection('messages')
         .orderBy('dateTime')
-        .limit(50)
         .snapshots()
         .listen((event) {
       messages = [];
       event.docs.forEach((element) {
         messages.add(MessageModel.fromJson(element.data()));
+
+
+        print('messages : ${messages}');
+        print('messages element : ${element}');
       });
       emit(HomeGetMessagesSuccessState());
     });
   }
 
+
+
+
+
+
+
   bool buttonClicked = false;
 
   void changeLikeButton() {
     buttonClicked = !buttonClicked;
-    // isFollowing =  value.data()!['followers']
-    //     .contains(uId) ? true : false;
+
     emit(HomeCheckLikePostState());
   }
 
   void changeSaveButton() {
     isSavePost = !isSavePost!;
-    // isFollowing =  value.data()!['followers']
-    //     .contains(uId) ? true : false;
+
     emit(HomeCheckSavePostState());
   }
 
@@ -829,112 +765,6 @@ class HomeCubit extends Cubit<HomeStates> {
     // changeLikeButton();
     // buttonClicked=!buttonClicked;
   }
-
-  // void likePostForUser({PostModel ? model,}) {
-  //
-  //   FirebaseFirestore.instance
-  //       .collection('posts')
-  //       .doc(postId)
-  //       .get()
-  //       .then((value) {
-  //     List likes = [];
-  //
-  //     value.data()!['likes'].forEach((element) {
-  //       likes.add(element!);
-  //       print(' /////////////////likes ::: $likes');
-  //     });
-  //     if (!likes.contains(model!.uId)) {
-  //       FirebaseFirestore.instance.collection('posts').doc(postId).update({
-  //         'likes': FieldValue.arrayUnion([model!.uId])
-  //       });
-  //       emit(HomeLikePostSuccessState());
-  //       // getPostsById(postId);
-  //     }else {
-  //       FirebaseFirestore.instance.collection('posts').doc(postId).update({
-  //         'likes': FieldValue.arrayRemove([model!.uId])
-  //       });
-  //       emit(HomeDisLikePostSuccessState());
-  //     }
-  //     // buttonClicked = value.data()!['likes'].contains(model!.uId) ? true : false;
-  //
-  //   }).catchError((e) {
-  //     print(e.toString());
-  //     emit(HomeLikePostErrorState(e.toString()));
-  //   });
-  //
-  // }
-  // Future<String> likePost(String postId, String uid, List likes) async {
-  //   try {
-  //     if (likes.contains(uid)) {
-  //       // if the likes list contains the user uid, we need to remove it
-  //       FirebaseFirestore.instance.collection('posts').doc(postId).update({
-  //         'likes': FieldValue.arrayRemove([uid])
-  //       });
-  //     } else {
-  //       // else we need to add uid to the likes array
-  //       _firestore.collection('posts').doc(postId).update({
-  //         'likes': FieldValue.arrayUnion([uid])
-  //       });
-  //     }
-  //     res = 'success';
-  //   } catch (err) {
-  //     res = err.toString();
-  //   }
-  //   return res;
-  // }
-  //
-  //
-
-
-
-
-
-
-
-
-  //
-  // List<dynamic> postLikes = [];
-  // List<String?> postsLikesId = [];
-  // // List<PostModel?> posts = [];
-
-  //
-  // void getLikesPost(postId){
-  //   postsLikesId=[];
-  //   emit(HomeGetLikesPostLoadingState());
-  //   // getPostsData();
-  //   postLikes=[];
-  //   FirebaseFirestore.instance
-  //       .collection('posts')
-  //       .where('postId', isEqualTo: postId)
-  //       .get().then((value) =>
-  //       value.docs.forEach((element) {
-  //         element.data()!['likes'] .forEach((element) {
-  //           postsLikesId.add(element);
-  //           postLikes=[];
-  //
-  //           users.forEach((user) {
-  //             if(user!.uId==element)
-  //               postLikes.add(user);
-  //           });
-  //
-  //
-  //           emit(HomeGetLikesPostSuccessState());
-  //           // getPostsData();
-  //
-  //           // postSave.add(PostModel.fromJson(element));
-  //         });
-  //       })
-  //   ).catchError((error) {
-  //     print(error.toString());
-  //     emit(HomeGetLikesPostErrorState(error.toString()));
-  //
-  //
-  //   });
-  //   print('/////////////////////////postsSaveId ::: $postsSaveId');
-  //   // getPostsData();
-  //
-  //
-  // }
 
 
 
@@ -1109,53 +939,6 @@ class HomeCubit extends Cubit<HomeStates> {
 
 
 
-  //
-  // List<dynamic?> postSave = [];
-  // List<String?> postsSaveId = [];
-  // // List<PostModel?> posts = [];
-  //
-  //
-  // void getSavePost(){
-  //   postsSaveId=[];
-  //   emit(HomeGetSavePostLoadingState());
-  //   // getPostsData();
-  //   postSave=[];
-  //    FirebaseFirestore.instance
-  //       .collection('users')
-  //       // .where('uId', isEqualTo: model!.uId)
-  //       .get().then((value) =>
-  //    value.docs.forEach((element) {
-  //      element.data()['savePost'].forEach((element) {
-  //        // postsSaveId.add(element);
-  //        postSave=[];
-  //
-  //          posts.forEach((post) {
-  //            if(post==element)
-  //              postSave.add(post);
-  //            print('/////////////////////////post!.postId ::: ${post!.postId}');
-  //
-  //          });
-  //        print('/////////////////////////postSave ::: $postSave');
-  //        print('/////////////////////////element ::: $element');
-  //
-  //          // getPostsData();
-  //
-  //        // postSave.add(PostModel.fromJson(element));
-  //      });
-  //    })
-  //   ).catchError((error) {
-  //     print(error.toString());
-  //     emit(HomeGetSavePostErrorState(error.toString()));
-  //
-  //
-  //   });
-  //    print('/////////////////////////postsSaveId ::: $postsSaveId');
-  //   // getPostsData();
-  //
-  //
-  // }
-  //
-
 
   List<dynamic?> postSave = [];
   List<String?> postsSaveId = [];
@@ -1254,51 +1037,46 @@ class HomeCubit extends Cubit<HomeStates> {
   void getLikesPost({postId}){
     emit(HomeGetSavePostLoadingState());
     getPostsData();
-    // getUserData();
     getAllUsersWithMe();
-    // getAllUsersWithMe();
     postLikes=[];
     postsLikeId=[];
-
+    usersWithMe=[];
 
     FirebaseFirestore.instance
         .collection('posts')
         .where('postId', isEqualTo: postId)
+         // .orderBy('likes', descending: true)
         .get().then((value) =>
         value.docs.forEach((element) {
           postLikes=[];
+          postsLikeId=[];
+
 
           element.data()!['likes'].forEach((element) {
-            postsLikeId.add(element);
-            // postsSave=[];
 
-            postsLikeId.forEach((element) {
+            postsLikeId.add(element);
+
+
+            // postsLikeId.forEach((element) {
               usersWithMe.forEach(( userId) {
+
                 if(element==userId!.uId)
                   postLikes.add(
                     userId!,
                   );
-              });
-              print('/////////////////////////postSave ::: $postSave');
-              print('/////////////////////////element ::: $element');
+              // });
+              print('/////////////////////////postLikes ::: $postLikes');
+              print('/////////////////////////element postLikes::: $element');
 
           });
-
-            //
-            // usersWithMe.forEach((post) {
-            //   if(post!.postId==element)
-            //     postLikes.add(post);
-            //
-            //
-
-
-
-
-            // getPostsData();
-
-            // postSave.add(PostModel.fromJson(element));
           });
+
+        emit(HomeGetLikesPostSuccessState());
+
         })
+
+
+
     ).catchError((error) {
       print(error.toString());
       emit(HomeGetSavePostErrorState(error.toString()));
@@ -1310,6 +1088,16 @@ class HomeCubit extends Cubit<HomeStates> {
 
 
   }
+
+
+
+
+
+
+
+
+
+
 
 
 

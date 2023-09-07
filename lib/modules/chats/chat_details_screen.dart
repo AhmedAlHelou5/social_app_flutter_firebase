@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_app_flutter_firebase/layout/home/cubit/cubit.dart';
 import 'package:social_app_flutter_firebase/layout/home/cubit/states.dart';
 import 'package:social_app_flutter_firebase/models/user/user_model.dart';
+import 'package:social_app_flutter_firebase/modules/profile/view_profile.dart';
 import 'package:social_app_flutter_firebase/shared/styles/colors/colors.dart';
 
 import '../../shared/components/components.dart';
@@ -12,13 +14,12 @@ class ChatDetailsScreen extends StatelessWidget {
   UserModel? model;
 
   ChatDetailsScreen({this.model});
+  ScrollController _scrollController =  ScrollController();
 
 
   @override
   Widget build(BuildContext context) {
-    return
-
-      Builder(
+    return Builder(
           builder: (context) {
             HomeCubit.get(context).getMessages(recieverId: model!.uId);
             return BlocConsumer<HomeCubit, HomeStates>(
@@ -36,20 +37,27 @@ class ChatDetailsScreen extends StatelessWidget {
                       },
                       icon: Icon(Icons.arrow_back_ios, size: 16,),
                     ),
-                    title: Row(
-                        children: [
-                          CircleAvatar(
-                              radius: 20,
-                              backgroundImage: NetworkImage(
-                                '${model!.image}',
-                              )
-                          ),
-                          SizedBox(width: 15),
-                          Text(
-                            '${model!.name}',
-                            style: TextStyle(fontSize: 16, height: 1.4),
-                          )
-                        ]
+                    title: InkWell(
+                      onTap: (){
+                        navigateTo(context, ViewProfileScreen(model: model));
+
+                      },
+
+                      child: Row(
+                          children: [
+                            CircleAvatar(
+                                radius: 20,
+                                backgroundImage: NetworkImage(
+                                  '${model!.image}',
+                                )
+                            ),
+                            SizedBox(width: 15),
+                            Text(
+                              '${model!.name}',
+                              style: TextStyle(fontSize: 16, height: 1.4),
+                            )
+                          ]
+                      ),
                     ),
                   ),
                   body: Padding(
@@ -62,21 +70,17 @@ class ChatDetailsScreen extends StatelessWidget {
                                   child: ConditionalBuilder(
                                     condition: cubit.messages.length > 0,
 
-                                    builder: (context) => ListView.separated(
-                                      physics: BouncingScrollPhysics(),
-                                      itemBuilder: (context, index) {
-                                        var message = cubit.messages[index];
-                                          // buildMessage(cubit.messages[index]);
+                                    builder: (context) => Expanded(
+                                      child: ListView.separated(
+                                         physics: BouncingScrollPhysics(),
+                                        itemBuilder: (context, index) {
+                                          return buildMyMessage( cubit.messages[index],model,index,context);
+                                            },
+                                        separatorBuilder: (context, index) =>
+                                            SizedBox(height: 15),
+                                        itemCount: cubit.messages.length,
 
-                                          if (cubit.messages[index].senderId == model!.uId)
-                                            return buildMessage(message,context);
-
-                                            return buildMyMessage(message,context);
-
-                                          },
-                                      separatorBuilder: (context, index) =>
-                                          SizedBox(height: 15), itemCount: cubit.messages.length,
-
+                                      ),
                                     ), fallback: (BuildContext context)=>Center(child: Text('No messages yet'),),
 
                                   ),
@@ -110,12 +114,7 @@ class ChatDetailsScreen extends StatelessWidget {
                                                   hintText: 'Type your message',
                                                   border: InputBorder.none,
                                                 ),
-                                                // validator: (value){
-                                                //   if(value!.length >0)
-                                                //
-                                                //   // cubit.messageController == value!;
-                                                //
-                                                // },
+
                                               ),
                                             )),
 
@@ -136,8 +135,7 @@ class ChatDetailsScreen extends StatelessWidget {
                                               cubit.sendMessage(
                                                 text: cubit.messageController
                                                     .text,
-                                                dateTime: DateTime.now()
-                                                    .toString(),
+                                                dateTime: Timestamp.now(),
                                                 recieverId: model!.uId,
                                               );
 

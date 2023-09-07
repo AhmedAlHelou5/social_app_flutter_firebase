@@ -103,61 +103,69 @@ Widget defaultFormField({
       ),
     );
 
-Widget buildMessage(MessageModel? message, context) =>
-    Align(
-      alignment: AlignmentDirectional.centerStart,
-      child: Container(
-        decoration: BoxDecoration(
-            color: Colors.grey[300],
-            // color: defaultColor.withOpacity(.2),
-            borderRadius: const BorderRadiusDirectional.only(
-              topEnd: Radius.circular(10),
-              topStart: Radius.circular(10),
-              bottomEnd: Radius.circular(10),
-            )),
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: Text('${message!.text}',
-            style: Theme
-                .of(context)
-                .textTheme
-                .caption!
-                .copyWith(
-                height: 1.4,
-                fontSize: 14,
-                color: Colors.black.withOpacity(0.8))),
-      ),
-    );
+// Widget buildMessage(MessageModel? message, context) =>
+//     Align(
+//       alignment: AlignmentDirectional.centerStart,
+//       child: Container(
+//         decoration: BoxDecoration(
+//             color: Colors.grey[300],
+//             // color: defaultColor.withOpacity(.2),
+//             borderRadius: const BorderRadiusDirectional.only(
+//               topEnd: Radius.circular(10),
+//               topStart: Radius.circular(10),
+//               bottomEnd: Radius.circular(10),
+//             )),
+//         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+//         child: Text('${message!.text}',
+//             style: Theme
+//                 .of(context)
+//                 .textTheme
+//                 .caption!
+//                 .copyWith(
+//                 height: 1.4,
+//                 fontSize: 14,
+//                 color: Colors.black.withOpacity(0.8))),
+//       ),
+//     );
+//other
+Widget buildMyMessage(MessageModel message,UserModel? model,index,context, {Key? key}){
+  var cubit = HomeCubit.get(context);
 
-Widget buildMyMessage(MessageModel message, context, {Key? key}) =>
-    Align(
-      alignment: AlignmentDirectional.centerEnd,
-      child: Container(
-        decoration: BoxDecoration(
-          // color: Colors.grey[300],
-            color: defaultColor.withOpacity(.2),
-            borderRadius: const BorderRadiusDirectional.only(
-              topEnd: Radius.circular(10),
-              topStart: Radius.circular(10),
-              bottomStart: Radius.circular(10),
-            )),
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: Text('${message.text}',
-            style: Theme
-                .of(context)
-                .textTheme
-                .caption!
-                .copyWith(
-                height: 1.4,
-                fontSize: 14,
-                color: Colors.black.withOpacity(0.8))),
-      ),
-    );
+  cubit.isMe=cubit.messages[index].senderId == model!.uId?false:true;
+
+  return Align(
+    alignment:!cubit.isMe!? AlignmentDirectional.centerStart: AlignmentDirectional.centerEnd,
+    child: Container(
+      decoration: BoxDecoration(
+        // color: Colors.grey[300],
+          color:cubit.isMe!?defaultColor.withOpacity(.2):Colors.grey[300],
+          borderRadius:  BorderRadiusDirectional.only(
+            topEnd: Radius.circular(10),
+            topStart: Radius.circular(10),
+            bottomStart:cubit.isMe! ? Radius.circular(10): Radius.circular(0),
+            bottomEnd:cubit.isMe! ? Radius.circular(0): Radius.circular(10),
+          )),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      child: Text('${message.text}',
+          style: Theme
+              .of(context)
+              .textTheme
+              .caption!
+              .copyWith(
+              height: 1.4,
+              fontSize: 14,
+              color: Colors.black.withOpacity(0.8))),
+    ),
+  );
+
+}
 
 Widget buildPostItem(PostModel?  model,
     context,
     int? index,
     {commentController, isSearch = false, isHome = false}) {
   // bool buttonClicked = false;
+  // HomeCubit.get(context).getLikesPost(postId: model!.postId);
 
   return Card(
     clipBehavior: Clip.antiAliasWithSaveLayer,
